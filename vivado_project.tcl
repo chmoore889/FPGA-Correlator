@@ -18,8 +18,11 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+   "${origin_dir}/src/design/counter.vhd" \
+   "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
+   "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -126,6 +129,7 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "VHDL" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "4" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -135,11 +139,23 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
+ [file normalize "${origin_dir}/src/design/counter.vhd"] \
+ [file normalize "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd"] \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/counter.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/dsp_multiply_and_accumulate.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 set file "$origin_dir/src/design/multiplication_accumulator.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -176,6 +192,7 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 set obj [get_filesets sim_1]
 set files [list \
  [file normalize "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -195,6 +212,7 @@ set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $o
 set_property -name "top" -value "multiplication_accumulator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
