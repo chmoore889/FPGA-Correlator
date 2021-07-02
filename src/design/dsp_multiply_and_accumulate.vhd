@@ -8,6 +8,7 @@ entity dsp_multiply_and_accumulate is
     Port ( a : in STD_LOGIC_VECTOR (15 downto 0);
            b : in STD_LOGIC_VECTOR (15 downto 0);
            clk : in STD_LOGIC;
+           reset : in STD_LOGIC;
            M2_select : in STD_LOGIC;
            output : out STD_LOGIC_VECTOR (31 downto 0));
 end dsp_multiply_and_accumulate;
@@ -15,11 +16,17 @@ end dsp_multiply_and_accumulate;
 architecture Behavioral of dsp_multiply_and_accumulate is
     signal sum : STD_LOGIC_VECTOR (47 downto 0);
     signal inmode : STD_LOGIC_VECTOR (4 downto 0);
+    
+    signal widened_a : STD_LOGIC_VECTOR (29 downto 0);
+    signal widened_b : STD_LOGIC_VECTOR (17 downto 0);
 begin
     output <= sum(31 downto 0);
     
     -- Using the inmode to implement M2
     inmode <= "000" & (NOT M2_select) & '0';
+    
+    widened_a <= (widened_a'LEFT downto a'LENGTH => '0') & a;
+    widened_b <= (widened_b'LEFT downto b'LENGTH => '0') & b;
 
     DSP48E1_inst : DSP48E1
     generic map (
@@ -80,8 +87,8 @@ begin
        INMODE => inmode,                 -- 5-bit input: INMODE control input
        OPMODE => "0100101",                 -- 7-bit input: Operation mode input
        -- Data: 30-bit (each) input: Data Ports
-       A => a,                           -- 30-bit input: A data input
-       B => b,                           -- 18-bit input: B data input
+       A => widened_a,                           -- 30-bit input: A data input
+       B => widened_b,                           -- 18-bit input: B data input
        C => (others => '0'),                           -- 48-bit input: C data input
        CARRYIN => '0',               -- 1-bit input: Carry input signal
        D => (others => '0'),                           -- 25-bit input: D data input
@@ -108,6 +115,6 @@ begin
        RSTD => '0',                     -- 1-bit input: Reset input for DREG and ADREG
        RSTINMODE => '0',           -- 1-bit input: Reset input for INMODEREG
        RSTM => '0',                     -- 1-bit input: Reset input for MREG
-       RSTP => '0'                      -- 1-bit input: Reset input for PREG
+       RSTP => reset                      -- 1-bit input: Reset input for PREG
     );
 end Behavioral;

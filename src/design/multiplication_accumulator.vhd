@@ -25,9 +25,10 @@ architecture Behavioral of multiplication_accumulator is
     signal A, B : STD_LOGIC_VECTOR (15 downto 0);
     signal ND, EOD : STD_LOGIC;
     
-    signal L1 : STD_LOGIC;
+    signal L1, EODDelay : STD_LOGIC;
     
     signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0);
+    signal counter_out : STD_LOGIC_VECTOR (15 downto 0);
 begin
     Aout <= A;
     EODout <= EOD;
@@ -37,12 +38,15 @@ begin
         signal mux_selector : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
-            Port ( a : in STD_LOGIC_VECTOR (29 downto 0);
-                   b : in STD_LOGIC_VECTOR (17 downto 0);
+            Port ( a : in STD_LOGIC_VECTOR (15 downto 0);
+                   b : in STD_LOGIC_VECTOR (15 downto 0);
                    clk : in STD_LOGIC;
+                   reset : in STD_LOGIC;
                    M2_select : in STD_LOGIC;
-                   output : out STD_LOGIC_VECTOR (47 downto 0));
+                   output : out STD_LOGIC_VECTOR (31 downto 0));
         end component;
+        
+        signal dsp_reset : STD_LOGIC;
     begin
         mux_selector <= NOT Reset OR ND;
     
@@ -57,11 +61,13 @@ begin
             end if;
         end process;
         
+        dsp_reset <= Reset OR EODDelay;
         multiplier : dsp_multiply_and_accumulate
         port map (
             a => M1,
             b => Ain,
             clk => Clk,
+            reset => dsp_reset,
             M2_select => mux_selector,
             output => multiplier_out
         );
@@ -73,6 +79,8 @@ begin
             B <= Bin;
             ND <= NDin;
             EOD <= EODin;
+            
+            EODDelay <= EOD;
         end if;
     end process inputs;
     
@@ -82,4 +90,40 @@ begin
             BRdy <= L1;
         end if;
     end process ready_reg;
+    
+    counter : block
+        component counter is
+            Port ( trigger : in STD_LOGIC; --Output `count` increments by 1 on the rising edge of this trigger
+                   reset : in STD_LOGIC;
+                   count : out STD_LOGIC_VECTOR (15 downto 0));
+        end component;
+        
+        signal counter_reset : STD_LOGIC;
+    begin
+        counter_reset <= Reset OR EODDelay;
+    
+        count : counter
+        port map(
+            trigger => ND,
+            reset => counter_reset,
+            count => counter_out
+        );
+    end block counter;
+    
+    data_handling : block
+    begin
+        process (Clk) begin
+            if rising_edge(Clk) then
+                if EODDelay = '1' then
+                    Dout <= multiplier_out;
+                    DoutRdy <= '1';
+                    Nout <= counter_out;
+                else
+                    Dout <= Din;
+                    DoutRdy <= DinRdy;
+                    Nout <= Nin;
+                end if;
+            end if;
+        end process;
+    end block data_handling;
 end Behavioral;
