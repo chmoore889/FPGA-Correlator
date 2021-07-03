@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1200001fs"></ZoomEndTime>
-      <Cursor1Time time="1200fs"></Cursor1Time>
+      <ZoomStartTime time="60000fs"></ZoomStartTime>
+      <ZoomEndTime time="420001fs"></ZoomEndTime>
+      <Cursor1Time time="360000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="110"></ValueColumnWidth>
+      <ValueColumnWidth column_width="106"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="3" />
+   <WVObjectSize size="8" />
    <wvobject fp_name="/multiplication_accumulator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -30,5 +30,25 @@
    <wvobject fp_name="/multiplication_accumulator_testbench/Bin" type="array">
       <obj_property name="ElementShortName">Bin[15:0]</obj_property>
       <obj_property name="ObjectShortName">Bin[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/NDin" type="logic">
+      <obj_property name="ElementShortName">NDin</obj_property>
+      <obj_property name="ObjectShortName">NDin</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/EODin" type="logic">
+      <obj_property name="ElementShortName">EODin</obj_property>
+      <obj_property name="ObjectShortName">EODin</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/Dout" type="array">
+      <obj_property name="ElementShortName">Dout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Dout[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/Nout" type="array">
+      <obj_property name="ElementShortName">Nout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Nout[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/DoutRdy" type="logic">
+      <obj_property name="ElementShortName">DoutRdy</obj_property>
+      <obj_property name="ObjectShortName">DoutRdy</obj_property>
    </wvobject>
 </wave_config>

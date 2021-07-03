@@ -8,14 +8,14 @@ end multiplication_accumulator_testbench;
 
 architecture Behavioral of multiplication_accumulator_testbench is
     constant CLOCK_PERIOD : time := 10ns;
-    constant DATA_IN_PERIOD : time := CLOCK_PERIOD * 20;
+    constant DATA_IN_PERIOD : time := CLOCK_PERIOD * 10;
     signal clock : std_logic := '0';
 
     component multiplication_accumulator is
         Port ( Clk : in STD_LOGIC;
                Ain : in STD_LOGIC_VECTOR (15 downto 0);
                Bin : in STD_LOGIC_VECTOR (15 downto 0);
-               ND : in STD_LOGIC;
+               NDin : in STD_LOGIC;
                EODin : in STD_LOGIC;
                Reset : in STD_LOGIC;
                Din : in STD_LOGIC_VECTOR (31 downto 0);
@@ -30,9 +30,13 @@ architecture Behavioral of multiplication_accumulator_testbench is
                DoutRdy : out STD_LOGIC);
     end component;
     
-    signal Ain, Bin, Nin : STD_LOGIC_VECTOR (15 downto 0);
-    signal ND, EODin, Reset, DinRdy : STD_LOGIC;
-    signal Din : STD_LOGIC_VECTOR (31 downto 0);
+    signal Ain, Bin, Nin : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal NDin, EODin, Reset, DinRdy : STD_LOGIC := '0';
+    signal Din : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+    
+    signal Dout : STD_LOGIC_VECTOR (31 downto 0);
+    signal Nout : STD_LOGIC_VECTOR (15 downto 0);
+    signal DoutRdy : STD_LOGIC;
 begin
     clock_driver : process
     begin
@@ -47,17 +51,43 @@ begin
         Bin => Bin,
         Nin => Nin,
         Din => Din,
-        ND => ND,
+        NDin => NDin,
         EODin => EODin,
         Reset => Reset,
-        DinRdy => DinRdy
+        DinRdy => DinRdy,
+        Dout => Dout,
+        Nout => Nout,
+        DoutRdy => DoutRdy
     );
 
     test : process
     begin
+        wait for CLOCK_PERIOD;
+    
         Ain <= std_logic_vector(to_unsigned(5, Ain'LENGTH));
         Bin <= std_logic_vector(to_unsigned(10, Bin'LENGTH));
-        wait for 1200ns;
+        NDin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        Ain <= std_logic_vector(to_unsigned(8, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(10, Bin'LENGTH));
+        NDin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        Ain <= std_logic_vector(to_unsigned(8, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(8, Bin'LENGTH));
+        NDin <= '1';
+        EODin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        EODin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        wait for CLOCK_PERIOD * 5;
         
         finish;
     end process test;

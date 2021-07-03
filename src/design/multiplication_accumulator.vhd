@@ -48,10 +48,10 @@ begin
         
         signal dsp_reset : STD_LOGIC;
     begin
-        mux_selector <= NOT Reset OR ND;
+        mux_selector <= NOT Reset AND ND;
     
         --Only M1 is implemented here; M2 is done in the DSP
-        M1 <= Bin when mux_selector = '1' else 
+        M1 <= B when mux_selector = '1' else 
               (others => '0');
     
         Bout <= Buf1;
@@ -65,7 +65,7 @@ begin
         multiplier : dsp_multiply_and_accumulate
         port map (
             a => M1,
-            b => Ain,
+            b => A,
             clk => Clk,
             reset => dsp_reset,
             M2_select => mux_selector,
@@ -93,7 +93,8 @@ begin
     
     counter : block
         component counter is
-            Port ( trigger : in STD_LOGIC; --Output `count` increments by 1 on the rising edge of this trigger
+            Port ( enable : in STD_LOGIC;
+                   clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
                    count : out STD_LOGIC_VECTOR (15 downto 0));
         end component;
@@ -104,7 +105,8 @@ begin
     
         count : counter
         port map(
-            trigger => ND,
+            enable => ND,
+            clk => Clk,
             reset => counter_reset,
             count => counter_out
         );
