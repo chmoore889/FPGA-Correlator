@@ -21,19 +21,24 @@ entity multiplication_accumulator is
 end multiplication_accumulator;
 
 architecture Behavioral of multiplication_accumulator is
-    signal A, B : STD_LOGIC_VECTOR (15 downto 0);
-    signal ND, EOD : STD_LOGIC;
+    signal A, B, N : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal ND, EOD : STD_LOGIC := '0';
     
-    signal L1, EODDelay : STD_LOGIC;
+    signal L1, EODDelay, DRdy : STD_LOGIC := '0';
     
-    signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0);
+    signal multiplier_out, D : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     signal counter_out : STD_LOGIC_VECTOR (15 downto 0);
 begin
     Aout <= A;
+    BRdy <= L1;
     EODout <= EOD;
     
+    Dout <= D;
+    DoutRdy <= DRdy;
+    Nout <= N;
+    
     mult_mux_selects : block
-        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0);
+        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
         signal mux_selector : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
@@ -55,7 +60,7 @@ begin
     
         Bout <= Buf1;
         process (Clk) begin
-            if rising_edge(Clk) then
+            if rising_edge(Clk) then-- AND ND = '1' then
                 Buf1 <= M1;
             end if;
         end process;
@@ -86,7 +91,6 @@ begin
     ready_reg : process (Clk) begin
         if rising_edge(Clk) then
             L1 <= ND;
-            BRdy <= L1;
         end if;
     end process ready_reg;
     
@@ -116,13 +120,13 @@ begin
         process (Clk) begin
             if rising_edge(Clk) then
                 if EODDelay = '1' then
-                    Dout <= multiplier_out;
-                    DoutRdy <= '1';
-                    Nout <= counter_out;
+                    D <= multiplier_out;
+                    DRdy <= '1';
+                    N <= counter_out;
                 else
-                    Dout <= Din;
-                    DoutRdy <= DinRdy;
-                    Nout <= Nin;
+                    D <= Din;
+                    DRdy <= DinRdy;
+                    N <= Nin;
                 end if;
             end if;
         end process;

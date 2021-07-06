@@ -35,8 +35,8 @@ architecture Behavioral of multiplication_accumulator_testbench is
     signal Din : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     
     signal Dout : STD_LOGIC_VECTOR (31 downto 0);
-    signal Nout : STD_LOGIC_VECTOR (15 downto 0);
-    signal DoutRdy : STD_LOGIC;
+    signal Aout, Bout, Nout : STD_LOGIC_VECTOR (15 downto 0);
+    signal BRdy, DoutRdy, EODout : STD_LOGIC;
 begin
     clock_driver : process
     begin
@@ -57,7 +57,11 @@ begin
         DinRdy => DinRdy,
         Dout => Dout,
         Nout => Nout,
-        DoutRdy => DoutRdy
+        DoutRdy => DoutRdy,
+        Aout => Aout,
+        Bout => Bout,
+        BRdy => BRdy,
+        EODout => EODout
     );
 
     test : process
