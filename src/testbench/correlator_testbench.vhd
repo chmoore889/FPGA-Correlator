@@ -37,6 +37,7 @@ architecture Behavioral of correlator_testbench is
         end if;
         wait for CLOCK_PERIOD;
         
+        dataCtrl <= (others => '0');
         NDCtrl <= '0';
         if isEnd then
             EODCtrl <= '0';

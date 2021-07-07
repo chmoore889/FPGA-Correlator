@@ -38,7 +38,7 @@ begin
     Nout <= N;
     
     mult_mux_selects : block
-        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+        signal Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
         signal mux_selector : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
@@ -46,7 +46,6 @@ begin
                    b : in STD_LOGIC_VECTOR (15 downto 0);
                    clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
-                   M2_select : in STD_LOGIC;
                    output : out STD_LOGIC_VECTOR (31 downto 0));
         end component;
         
@@ -54,25 +53,20 @@ begin
     begin
         mux_selector <= NOT Reset AND ND;
     
-        --Only M1 is implemented here; M2 is done in the DSP
-        M1 <= B when mux_selector = '1' else 
-              (others => '0');
-    
         Bout <= Buf1;
         process (Clk) begin
             if rising_edge(Clk) AND ND = '1' then
-                Buf1 <= M1;
+                Buf1 <= B;
             end if;
         end process;
         
         dsp_reset <= Reset OR EODDelay;
         multiplier : dsp_multiply_and_accumulate
         port map (
-            a => M1,
-            b => A,
+            a => A,
+            b => B,
             clk => Clk,
             reset => dsp_reset,
-            M2_select => mux_selector,
             output => multiplier_out
         );
     end block mult_mux_selects;

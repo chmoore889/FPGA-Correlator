@@ -9,7 +9,6 @@ entity dsp_multiply_and_accumulate is
            b : in STD_LOGIC_VECTOR (15 downto 0);
            clk : in STD_LOGIC;
            reset : in STD_LOGIC;
-           M2_select : in STD_LOGIC;
            output : out STD_LOGIC_VECTOR (31 downto 0));
 end dsp_multiply_and_accumulate;
 
@@ -21,9 +20,6 @@ architecture Behavioral of dsp_multiply_and_accumulate is
     signal widened_b : STD_LOGIC_VECTOR (17 downto 0);
 begin
     output <= sum(31 downto 0);
-    
-    -- Using the inmode to implement M2
-    inmode <= "000" & (NOT M2_select) & '0';
     
     widened_a <= (widened_a'LEFT downto a'LENGTH => '0') & a;
     widened_b <= (widened_b'LEFT downto b'LENGTH => '0') & b;
@@ -84,7 +80,7 @@ begin
        ALUMODE => "0000",               -- 4-bit input: ALU control input
        CARRYINSEL => "000",         -- 3-bit input: Carry select input
        CLK => clk,                       -- 1-bit input: Clock input
-       INMODE => inmode,                 -- 5-bit input: INMODE control input
+       INMODE => "00000",                 -- 5-bit input: INMODE control input
        OPMODE => "0100101",                 -- 7-bit input: Operation mode input
        -- Data: 30-bit (each) input: Data Ports
        A => widened_a,                           -- 30-bit input: A data input
