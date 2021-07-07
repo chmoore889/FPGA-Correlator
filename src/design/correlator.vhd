@@ -17,6 +17,9 @@ end correlator;
 
 architecture Behavioral of correlator is
     component multiplication_accumulator is
+        Generic (
+            useCascade : boolean
+        );
         Port ( Clk : in STD_LOGIC;
                Ain : in STD_LOGIC_VECTOR (15 downto 0);
                Bin : in STD_LOGIC_VECTOR (15 downto 0);
@@ -45,6 +48,9 @@ begin
     mult_accums : for I in 0 to numDelays-1 generate
         first : if I = 0 generate
             mult_first : multiplication_accumulator
+            generic map (
+                useCascade => false
+            )
             port map (
                 Clk => clk,
                 Reset => Reset,
@@ -67,6 +73,9 @@ begin
 
         other : if I > 0 generate
             mult_other : multiplication_accumulator
+            generic map (
+                useCascade => true
+            )
             port map (
                 Clk => clk,
                 Reset => Reset,

@@ -2,6 +2,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity multiplication_accumulator is
+    Generic (
+        useCascade : boolean
+    );
     Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
            Bin : in STD_LOGIC_VECTOR (15 downto 0);
@@ -21,15 +24,14 @@ entity multiplication_accumulator is
 end multiplication_accumulator;
 
 architecture Behavioral of multiplication_accumulator is
-    signal A, B, N : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-    signal ND, firstDataDone, EOD : STD_LOGIC := '0';
+    signal N : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal ND, EOD : STD_LOGIC := '0';
     
     signal NDout, EODDelay, DRdy : STD_LOGIC := '0';
     
     signal multiplier_out, D : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     signal counter_out : STD_LOGIC_VECTOR (15 downto 0);
 begin
-    Aout <= A;
     BRdy <= NDout;
     EODout <= EOD;
     
@@ -38,12 +40,15 @@ begin
     Nout <= N;
     
     mult_mux_selects : block
-        signal Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-        signal mux_selector : STD_LOGIC;
-        
         component dsp_multiply_and_accumulate is
+            Generic (
+                useCascade : boolean
+            );
             Port ( a : in STD_LOGIC_VECTOR (15 downto 0);
                    b : in STD_LOGIC_VECTOR (15 downto 0);
+                   aout : out STD_LOGIC_VECTOR (15 downto 0);
+                   bout : out STD_LOGIC_VECTOR (15 downto 0);
+                   b2enable : in STD_LOGIC;
                    clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
                    output : out STD_LOGIC_VECTOR (31 downto 0));
@@ -51,20 +56,18 @@ begin
         
         signal dsp_reset : STD_LOGIC;
     begin
-        mux_selector <= NOT Reset AND ND;
-    
-        Bout <= Buf1;
-        process (Clk) begin
-            if rising_edge(Clk) AND ND = '1' then
-                Buf1 <= B;
-            end if;
-        end process;
-        
         dsp_reset <= Reset OR EODDelay;
+        
         multiplier : dsp_multiply_and_accumulate
+        generic map (
+            useCascade => useCascade
+        )
         port map (
-            a => A,
-            b => B,
+            a => Ain,
+            b => Bin,
+            aout => Aout,
+            bout => Bout,
+            b2enable => ND,
             clk => Clk,
             reset => dsp_reset,
             output => multiplier_out
@@ -73,8 +76,6 @@ begin
 
     inputs : process (Clk) begin
         if rising_edge(Clk) then
-            A <= Ain;
-            B <= Bin;
             ND <= NDin;
             EOD <= EODin;
             
@@ -82,19 +83,25 @@ begin
         end if;
     end process inputs;
     
-    new_data_cascade : process (Clk) begin
-        if rising_edge(Clk) then
-            if firstDataDone = '1' then
-                NDout <= NDin;
+    cascade_manage : block
+        signal firstDataDone, new_data_reset : STD_LOGIC := '0';
+    begin
+        new_data_reset <= Reset OR EODDelay;
+    
+        new_data_cascade : process (Clk) begin
+            if rising_edge(Clk) then
+                if firstDataDone = '1' then
+                    NDout <= NDin;
+                end if;
+                
+                if new_data_reset = '1' then
+                    firstDataDone <= '0';
+                elsif NDin = '1' then
+                    firstDataDone <= '1';
+                end if;
             end if;
-            
-            if EODDelay = '1' then
-                firstDataDone <= '0';
-            elsif NDin = '1' then
-                firstDataDone <= '1';
-            end if;
-        end if;
-    end process new_data_cascade;
+        end process new_data_cascade;
+    end block cascade_manage;
     
     counter : block
         component counter is

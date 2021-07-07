@@ -60,7 +60,7 @@ begin
     
     to_test : correlator
     generic map(
-        numDelays => 5
+        numDelays => 3
     )
     port map (
         Clk => clock,
