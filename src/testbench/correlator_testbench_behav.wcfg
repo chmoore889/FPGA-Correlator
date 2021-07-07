@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="47331fs"></ZoomStartTime>
-      <ZoomEndTime time="176532fs"></ZoomEndTime>
-      <Cursor1Time time="560000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="560001fs"></ZoomEndTime>
+      <Cursor1Time time="83058fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="106"></ValueColumnWidth>
+      <ValueColumnWidth column_width="98"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="8" />
    <wvobject fp_name="/correlator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -27,77 +27,25 @@
       <obj_property name="ElementShortName">data[15:0]</obj_property>
       <obj_property name="ObjectShortName">data[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/correlator_testbench/to_test/A_cascade" type="array">
-      <obj_property name="ElementShortName">A_cascade[4:0][15:0]</obj_property>
-      <obj_property name="ObjectShortName">A_cascade[4:0][15:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/correlator_testbench/to_test/B_cascade" type="array">
-      <obj_property name="ElementShortName">B_cascade[4:0][15:0]</obj_property>
-      <obj_property name="ObjectShortName">B_cascade[4:0][15:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+   <wvobject fp_name="/correlator_testbench/NDin" type="logic">
+      <obj_property name="ElementShortName">NDin</obj_property>
+      <obj_property name="ObjectShortName">NDin</obj_property>
    </wvobject>
    <wvobject fp_name="/correlator_testbench/EODin" type="logic">
       <obj_property name="ElementShortName">EODin</obj_property>
       <obj_property name="ObjectShortName">EODin</obj_property>
    </wvobject>
-   <wvobject fp_name="group23" type="group">
-      <obj_property name="label">ND inputs</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/correlator_testbench/NDin" type="logic">
-         <obj_property name="ElementShortName">NDin</obj_property>
-         <obj_property name="ObjectShortName">NDin</obj_property>
-      </wvobject>
-      <wvobject fp_name="/correlator_testbench/to_test/BRdy_cascade" type="array">
-         <obj_property name="ElementShortName">BRdy_cascade[4:0]</obj_property>
-         <obj_property name="ObjectShortName">BRdy_cascade[4:0]</obj_property>
-         <obj_property name="Reversed">false</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
+   <wvobject fp_name="/correlator_testbench/Dout" type="array">
+      <obj_property name="ElementShortName">Dout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Dout[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="group30" type="group">
-      <obj_property name="label">D outputs</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/correlator_testbench/Dout" type="array">
-         <obj_property name="ElementShortName">Dout[31:0]</obj_property>
-         <obj_property name="ObjectShortName">Dout[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/correlator_testbench/to_test/D_cascade" type="array">
-         <obj_property name="ElementShortName">D_cascade[4:0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">D_cascade[4:0][31:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
+   <wvobject fp_name="/correlator_testbench/DoutRdy" type="logic">
+      <obj_property name="ElementShortName">DoutRdy</obj_property>
+      <obj_property name="ObjectShortName">DoutRdy</obj_property>
    </wvobject>
-   <wvobject fp_name="group31" type="group">
-      <obj_property name="label">DRdy ouputs</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/correlator_testbench/DoutRdy" type="logic">
-         <obj_property name="ElementShortName">DoutRdy</obj_property>
-         <obj_property name="ObjectShortName">DoutRdy</obj_property>
-      </wvobject>
-      <wvobject fp_name="/correlator_testbench/to_test/DRdy_cascade" type="array">
-         <obj_property name="ElementShortName">DRdy_cascade[4:0]</obj_property>
-         <obj_property name="ObjectShortName">DRdy_cascade[4:0]</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group33" type="group">
-      <obj_property name="label">N outputs</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/correlator_testbench/Nout" type="array">
-         <obj_property name="ElementShortName">Nout[15:0]</obj_property>
-         <obj_property name="ObjectShortName">Nout[15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/correlator_testbench/to_test/N_cascade" type="array">
-         <obj_property name="ElementShortName">N_cascade[4:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">N_cascade[4:0][15:0]</obj_property>
-      </wvobject>
+   <wvobject fp_name="/correlator_testbench/Nout" type="array">
+      <obj_property name="ElementShortName">Nout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Nout[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/correlator_testbench/Reset" type="logic">
       <obj_property name="ElementShortName">Reset</obj_property>
