@@ -12,11 +12,11 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="360001fs"></ZoomEndTime>
-      <Cursor1Time time="25477fs"></Cursor1Time>
+      <Cursor1Time time="360000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+      <ValueColumnWidth column_width="98"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="12" />
    <wvobject fp_name="/multiplication_accumulator_testbench/clock" type="logic">

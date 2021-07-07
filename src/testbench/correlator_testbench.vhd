@@ -59,13 +59,11 @@ begin
     
     to_test : correlator
     generic map(
-        numDelays => 2
+        numDelays => 5
     )
     port map (
         Clk => clock,
         data => data,
-
-
         NDin => NDin,
         EODin => EODin,
         Reset => Reset,
@@ -88,35 +86,35 @@ begin
         
         simulateData(
             dataInt => 6,
-            isEnd => true,
+            isEnd => false,
             dataCtrl => data,
             NDCtrl => NDin,
             EODCtrl => EODin
         );
         
---        simulateData(
---            dataInt => 7,
---            isEnd => false,
---            dataCtrl => data,
---            NDCtrl => NDin,
---            EODCtrl => EODin
---        );
+        simulateData(
+            dataInt => 7,
+            isEnd => false,
+            dataCtrl => data,
+            NDCtrl => NDin,
+            EODCtrl => EODin
+        );
         
---        simulateData(
---            dataInt => 8,
---            isEnd => false,
---            dataCtrl => data,
---            NDCtrl => NDin,
---            EODCtrl => EODin
---        );
+        simulateData(
+            dataInt => 8,
+            isEnd => false,
+            dataCtrl => data,
+            NDCtrl => NDin,
+            EODCtrl => EODin
+        );
         
---        simulateData(
---            dataInt => 9,
---            isEnd => true,
---            dataCtrl => data,
---            NDCtrl => NDin,
---            EODCtrl => EODin
---        );
+        simulateData(
+            dataInt => 9,
+            isEnd => true,
+            dataCtrl => data,
+            NDCtrl => NDin,
+            EODCtrl => EODin
+        );
         
         wait for CLOCK_PERIOD * 5;
         

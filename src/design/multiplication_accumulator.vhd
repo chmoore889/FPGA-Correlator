@@ -22,15 +22,15 @@ end multiplication_accumulator;
 
 architecture Behavioral of multiplication_accumulator is
     signal A, B, N : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-    signal ND, EOD : STD_LOGIC := '0';
+    signal ND, firstDataDone, EOD : STD_LOGIC := '0';
     
-    signal L1, EODDelay, DRdy : STD_LOGIC := '0';
+    signal NDout, EODDelay, DRdy : STD_LOGIC := '0';
     
     signal multiplier_out, D : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     signal counter_out : STD_LOGIC_VECTOR (15 downto 0);
 begin
     Aout <= A;
-    BRdy <= L1;
+    BRdy <= NDout;
     EODout <= EOD;
     
     Dout <= D;
@@ -60,7 +60,7 @@ begin
     
         Bout <= Buf1;
         process (Clk) begin
-            if rising_edge(Clk) then-- AND ND = '1' then
+            if rising_edge(Clk) AND ND = '1' then
                 Buf1 <= M1;
             end if;
         end process;
@@ -88,11 +88,19 @@ begin
         end if;
     end process inputs;
     
-    ready_reg : process (Clk) begin
+    new_data_cascade : process (Clk) begin
         if rising_edge(Clk) then
-            L1 <= ND;
+            if firstDataDone = '1' then
+                NDout <= NDin;
+            end if;
+            
+            if EODDelay = '1' then
+                firstDataDone <= '0';
+            elsif NDin = '1' then
+                firstDataDone <= '1';
+            end if;
         end if;
-    end process ready_reg;
+    end process new_data_cascade;
     
     counter : block
         component counter is
