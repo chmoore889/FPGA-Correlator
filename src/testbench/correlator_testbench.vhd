@@ -11,6 +11,8 @@ architecture Behavioral of correlator_testbench is
     constant DATA_IN_PERIOD : time := CLOCK_PERIOD * 10;
     signal clock : std_logic := '0';
 
+    constant num_delays : integer := 5;
+
     component correlator is
         Generic (
             numDelays : integer
@@ -41,8 +43,9 @@ architecture Behavioral of correlator_testbench is
         NDCtrl <= '0';
         if isEnd then
             EODCtrl <= '0';
+        else
+            wait for DATA_IN_PERIOD - CLOCK_PERIOD;
         end if;
-        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
     end simulateData;
     
     signal data : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
@@ -60,7 +63,7 @@ begin
     
     to_test : correlator
     generic map(
-        numDelays => 3
+        numDelays => num_delays
     )
     port map (
         Clk => clock,
@@ -74,50 +77,25 @@ begin
     );
     
     test : process
+        variable isEnd : boolean := false;
     begin
         wait for CLOCK_PERIOD;
-    
-        simulateData(
-            dataInt => 5,
-            isEnd => false,
-            dataCtrl => data,
-            NDCtrl => NDin,
-            EODCtrl => EODin
-        );
         
-        simulateData(
-            dataInt => 6,
-            isEnd => false,
-            dataCtrl => data,
-            NDCtrl => NDin,
-            EODCtrl => EODin
-        );
+        for I in 1 to 10 loop
+            if I = 10 then
+                isEnd := true;
+            end if;
         
-        simulateData(
-            dataInt => 7,
-            isEnd => false,
-            dataCtrl => data,
-            NDCtrl => NDin,
-            EODCtrl => EODin
-        );
+            simulateData(
+                dataInt => I,
+                isEnd => isEnd,
+                dataCtrl => data,
+                NDCtrl => NDin,
+                EODCtrl => EODin
+            );
+        end loop;
         
-        simulateData(
-            dataInt => 8,
-            isEnd => false,
-            dataCtrl => data,
-            NDCtrl => NDin,
-            EODCtrl => EODin
-        );
-        
-        simulateData(
-            dataInt => 9,
-            isEnd => true,
-            dataCtrl => data,
-            NDCtrl => NDin,
-            EODCtrl => EODin
-        );
-        
-        wait for CLOCK_PERIOD * 5;
+        wait for CLOCK_PERIOD * 2 * (num_delays + 1);
         
         finish;
     end process test;
