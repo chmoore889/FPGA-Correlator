@@ -76,11 +76,26 @@ begin
         DoutRdy => DoutRdy
     );
     
-    test : process
+    test_in : process
         variable isEnd : boolean := false;
     begin
+        --Make sure reset signal does its job
+        for I in 1 to 10 loop
+            simulateData(
+                dataInt => I,
+                isEnd => isEnd,
+                dataCtrl => data,
+                NDCtrl => NDin,
+                EODCtrl => EODin
+            );
+        end loop;
+    
+        Reset <= '1';
+        wait for CLOCK_PERIOD;
+        Reset <= '0';
         wait for CLOCK_PERIOD;
         
+        --Procede to actual test of correct correlator results
         for I in 1 to 10 loop
             if I = 10 then
                 isEnd := true;
@@ -95,8 +110,37 @@ begin
             );
         end loop;
         
-        wait for CLOCK_PERIOD * 2 * (num_delays + 1);
+        wait;
+    end process test_in;
+    
+    verify_test : process
+        type INT_ARRAY is array (integer range <>) of integer;
+        variable data : INT_ARRAY(1 to 10) := (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        variable accum : integer := 0;
+    begin
+        for I in 0 to num_delays-1 loop        
+            wait until rising_edge(DoutRdy);
+            
+            accum := 0;
+            for X in data'LEFT to data'RIGHT - I loop
+                accum := accum + data(X) * data(X+I);
+            end loop;
+            
+            assert accum = to_integer(unsigned(Dout)) report "DOut is incorrect - expected: "
+            & integer'image(accum)
+            & " actual: "
+            & integer'image(to_integer(unsigned(Dout)));
+            
+            assert (10 - I) = to_integer(unsigned(NOut)) report "NOut is incorrect - expected: "
+            & integer'image(10 - I)
+            & " actual: "
+            & integer'image(to_integer(unsigned(NOut)));
+            
+            wait until falling_edge(DoutRdy);
+        end loop;
+        
+        wait for CLOCK_PERIOD;
         
         finish;
-    end process test;
+    end process verify_test;
 end Behavioral;
