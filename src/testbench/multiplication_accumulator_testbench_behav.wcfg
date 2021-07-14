@@ -10,34 +10,34 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="245167fs"></ZoomStartTime>
-      <ZoomEndTime time="870431fs"></ZoomEndTime>
-      <Cursor1Time time="360000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="460001fs"></ZoomEndTime>
+      <Cursor1Time time="460000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="100"></ValueColumnWidth>
+      <ValueColumnWidth column_width="92"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="12" />
    <wvobject fp_name="/multiplication_accumulator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
    </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/Ain" type="array">
-      <obj_property name="ElementShortName">Ain[15:0]</obj_property>
-      <obj_property name="ObjectShortName">Ain[15:0]</obj_property>
+   <wvobject fp_name="/multiplication_accumulator_testbench/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/Bin" type="array">
-      <obj_property name="ElementShortName">Bin[15:0]</obj_property>
-      <obj_property name="ObjectShortName">Bin[15:0]</obj_property>
+   <wvobject fp_name="/multiplication_accumulator_testbench/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/NDin" type="logic">
-      <obj_property name="ElementShortName">NDin</obj_property>
-      <obj_property name="ObjectShortName">NDin</obj_property>
+   <wvobject fp_name="/multiplication_accumulator_testbench/ND" type="logic">
+      <obj_property name="ElementShortName">ND</obj_property>
+      <obj_property name="ObjectShortName">ND</obj_property>
    </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/EODin" type="logic">
-      <obj_property name="ElementShortName">EODin</obj_property>
-      <obj_property name="ObjectShortName">EODin</obj_property>
+   <wvobject fp_name="/multiplication_accumulator_testbench/EOD" type="logic">
+      <obj_property name="ElementShortName">EOD</obj_property>
+      <obj_property name="ObjectShortName">EOD</obj_property>
    </wvobject>
    <wvobject fp_name="/multiplication_accumulator_testbench/Dout" type="array">
       <obj_property name="ElementShortName">Dout[31:0]</obj_property>
@@ -51,13 +51,13 @@
       <obj_property name="ElementShortName">DoutRdy</obj_property>
       <obj_property name="ObjectShortName">DoutRdy</obj_property>
    </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/EODout" type="logic">
-      <obj_property name="ElementShortName">EODout</obj_property>
-      <obj_property name="ObjectShortName">EODout</obj_property>
-   </wvobject>
    <wvobject fp_name="/multiplication_accumulator_testbench/BRdy" type="logic">
       <obj_property name="ElementShortName">BRdy</obj_property>
       <obj_property name="ObjectShortName">BRdy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/EODout" type="logic">
+      <obj_property name="ElementShortName">EODout</obj_property>
+      <obj_property name="ObjectShortName">EODout</obj_property>
    </wvobject>
    <wvobject fp_name="/multiplication_accumulator_testbench/Aout" type="array">
       <obj_property name="ElementShortName">Aout[15:0]</obj_property>

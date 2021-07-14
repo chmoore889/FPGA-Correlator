@@ -12,29 +12,27 @@ entity multiplication_accumulator is
            Din : in STD_LOGIC_VECTOR (31 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
-           Aout : out STD_LOGIC_VECTOR (15 downto 0);
-           Bout : out STD_LOGIC_VECTOR (15 downto 0);
-           BRdy : out STD_LOGIC;
+           Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0);
-           Nout : out STD_LOGIC_VECTOR (15 downto 0);
-           DoutRdy : out STD_LOGIC);
+           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           DoutRdy : out STD_LOGIC := '0');
 end multiplication_accumulator;
 
 architecture Behavioral of multiplication_accumulator is
-    signal A, B : STD_LOGIC_VECTOR (15 downto 0);
-    signal ND, EOD : STD_LOGIC;
+    signal A, B : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal ND, EOD, EODDelay : STD_LOGIC := '0';
     
-    signal L1, EODDelay : STD_LOGIC;
-    
-    signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0);
-    signal counter_out : STD_LOGIC_VECTOR (15 downto 0);
+    signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+    signal counter_out : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
 begin
     Aout <= A;
     EODout <= EOD;
     
     mult_mux_selects : block
-        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0);
+        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
         signal mux_selector : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
@@ -84,12 +82,25 @@ begin
         end if;
     end process inputs;
     
-    ready_reg : process (Clk) begin
-        if rising_edge(Clk) then
-            L1 <= ND;
-            BRdy <= L1;
-        end if;
-    end process ready_reg;
+    b_rdy : block
+        signal firstDataDone, new_data_reset : STD_LOGIC := '0';
+    begin
+        new_data_reset <= Reset OR EODDelay;
+        
+        b_out : process (Clk) begin
+            if rising_edge(Clk) then
+                if firstDataDone = '1' then
+                    BRdy <= ND;
+                end if;
+                                
+                if new_data_reset = '1' then
+                    firstDataDone <= '0';
+                elsif ND = '1' then
+                    firstDataDone <= '1';
+                end if;
+            end if;
+        end process b_out;
+    end block b_rdy;
     
     counter : block
         component counter is
