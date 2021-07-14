@@ -30,13 +30,13 @@ architecture Behavioral of multiplication_accumulator_testbench is
                DoutRdy : out STD_LOGIC);
     end component;
     
-    signal Ain, Bin, Nin : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal Ain, Bin, Nin, Aout, Bout : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
     signal NDin, EODin, Reset, DinRdy : STD_LOGIC := '0';
     signal Din : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     
     signal Dout : STD_LOGIC_VECTOR (31 downto 0);
-    signal Aout, Bout, Nout : STD_LOGIC_VECTOR (15 downto 0);
-    signal BRdy, DoutRdy, EODout : STD_LOGIC;
+    signal Nout : STD_LOGIC_VECTOR (15 downto 0);
+    signal DoutRdy, EODout, BRdy : STD_LOGIC;
 begin
     clock_driver : process
     begin
@@ -58,9 +58,9 @@ begin
         Dout => Dout,
         Nout => Nout,
         DoutRdy => DoutRdy,
+        BRdy => BRdy,
         Aout => Aout,
         Bout => Bout,
-        BRdy => BRdy,
         EODout => EODout
     );
 

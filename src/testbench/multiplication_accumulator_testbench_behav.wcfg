@@ -10,13 +10,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="360001fs"></ZoomEndTime>
+      <ZoomStartTime time="245167fs"></ZoomStartTime>
+      <ZoomEndTime time="870431fs"></ZoomEndTime>
       <Cursor1Time time="360000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="98"></ValueColumnWidth>
+      <ValueColumnWidth column_width="100"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="12" />
    <wvobject fp_name="/multiplication_accumulator_testbench/clock" type="logic">
@@ -55,6 +55,10 @@
       <obj_property name="ElementShortName">EODout</obj_property>
       <obj_property name="ObjectShortName">EODout</obj_property>
    </wvobject>
+   <wvobject fp_name="/multiplication_accumulator_testbench/BRdy" type="logic">
+      <obj_property name="ElementShortName">BRdy</obj_property>
+      <obj_property name="ObjectShortName">BRdy</obj_property>
+   </wvobject>
    <wvobject fp_name="/multiplication_accumulator_testbench/Aout" type="array">
       <obj_property name="ElementShortName">Aout[15:0]</obj_property>
       <obj_property name="ObjectShortName">Aout[15:0]</obj_property>
@@ -62,9 +66,5 @@
    <wvobject fp_name="/multiplication_accumulator_testbench/Bout" type="array">
       <obj_property name="ElementShortName">Bout[15:0]</obj_property>
       <obj_property name="ObjectShortName">Bout[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/multiplication_accumulator_testbench/BRdy" type="logic">
-      <obj_property name="ElementShortName">BRdy</obj_property>
-      <obj_property name="ObjectShortName">BRdy</obj_property>
    </wvobject>
 </wave_config>
