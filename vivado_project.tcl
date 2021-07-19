@@ -21,8 +21,11 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
+   "${origin_dir}/src/design/correlator.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
+   "${origin_dir}/src/testbench/correlator_testbench.vhd" \
+   "${origin_dir}/src/testbench/correlator_testbench_behav.wcfg" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -129,7 +132,7 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "VHDL" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "100" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "133" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -142,6 +145,7 @@ set files [list \
  [file normalize "${origin_dir}/src/design/counter.vhd"] \
  [file normalize "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd"] \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
+ [file normalize "${origin_dir}/src/design/correlator.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -161,13 +165,18 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
+set file "$origin_dir/src/design/correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 
 # Set 'sources_1' fileset file properties for local files
 # None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "multiplication_accumulator" -objects $obj
+set_property -name "top" -value "correlator" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
@@ -211,6 +220,37 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 set obj [get_filesets sim_1]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
 set_property -name "top" -value "multiplication_accumulator_testbench" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'correlator' fileset (if not found)
+if {[string equal [get_filesets -quiet correlator] ""]} {
+  create_fileset -simset correlator
+}
+
+# Set 'correlator' fileset object
+set obj [get_filesets correlator]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/correlator_testbench.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/correlator_testbench_behav.wcfg"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'correlator' fileset file properties for remote files
+set file "$origin_dir/src/testbench/correlator_testbench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets correlator] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'correlator' fileset file properties for local files
+# None
+
+# Set 'correlator' fileset properties
+set obj [get_filesets correlator]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
