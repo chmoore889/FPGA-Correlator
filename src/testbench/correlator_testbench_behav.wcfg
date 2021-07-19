@@ -10,13 +10,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1569666fs"></ZoomStartTime>
-      <ZoomEndTime time="2237667fs"></ZoomEndTime>
-      <Cursor1Time time="1586666fs"></Cursor1Time>
+      <ZoomStartTime time="1735000fs"></ZoomStartTime>
+      <ZoomEndTime time="2407001fs"></ZoomEndTime>
+      <Cursor1Time time="2035000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="84"></ValueColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="8" />
    <wvobject fp_name="/correlator_testbench/clock" type="logic">

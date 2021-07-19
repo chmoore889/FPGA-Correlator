@@ -146,8 +146,6 @@ begin
             & integer'image(dummyData'RIGHT - I)
             & " actual: "
             & integer'image(to_integer(unsigned(NOut)));
-            
-            wait until falling_edge(clock);
         end loop;
         
         wait for CLOCK_PERIOD;
