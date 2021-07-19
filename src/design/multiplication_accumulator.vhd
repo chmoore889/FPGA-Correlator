@@ -22,17 +22,16 @@ entity multiplication_accumulator is
 end multiplication_accumulator;
 
 architecture Behavioral of multiplication_accumulator is
-    signal A, B : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-    signal ND, EOD, EODDelay : STD_LOGIC := '0';
+    signal EODDelay : STD_LOGIC := '0';
     
     signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
     signal counter_out : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
 begin
-    Aout <= A;
-    EODout <= EOD;
+    Aout <= Ain;
+    EODout <= EODin;
     
     mult_mux_selects : block
-        signal M1, Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+        signal Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
         signal mux_selector : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
@@ -46,56 +45,42 @@ begin
         
         signal dsp_reset : STD_LOGIC;
     begin
-        mux_selector <= NOT Reset AND ND;
-    
-        --Only M1 is implemented here; M2 is done in the DSP
-        M1 <= B when mux_selector = '1' else 
-              (others => '0');
+        mux_selector <= NOT Reset AND NDin;
     
         Bout <= Buf1;
         process (Clk) begin
-            if rising_edge(Clk) then
-                Buf1 <= M1;
+            if rising_edge(Clk) AND NDin = '1' then
+                Buf1 <= Bin;
             end if;
         end process;
         
         dsp_reset <= Reset OR EODDelay;
         multiplier : dsp_multiply_and_accumulate
         port map (
-            a => M1,
-            b => A,
+            a => Ain,
+            b => Bin,
             clk => Clk,
             reset => dsp_reset,
             M2_select => mux_selector,
             output => multiplier_out
         );
     end block mult_mux_selects;
-
-    inputs : process (Clk) begin
-        if rising_edge(Clk) then
-            A <= Ain;
-            B <= Bin;
-            ND <= NDin;
-            EOD <= EODin;
-            
-            EODDelay <= EOD;
-        end if;
-    end process inputs;
     
     b_rdy : block
         signal firstDataDone, new_data_reset : STD_LOGIC := '0';
     begin
         new_data_reset <= Reset OR EODDelay;
         
+        BRdy <= NDin when firstDataDone = '1' else
+                '0';
+        
         b_out : process (Clk) begin
             if rising_edge(Clk) then
-                if firstDataDone = '1' then
-                    BRdy <= ND;
-                end if;
+                EODDelay <= EODin;
                                 
                 if new_data_reset = '1' then
                     firstDataDone <= '0';
-                elsif ND = '1' then
+                elsif NDin = '1' then
                     firstDataDone <= '1';
                 end if;
             end if;
@@ -116,7 +101,7 @@ begin
     
         count : counter
         port map(
-            enable => ND,
+            enable => NDin,
             clk => Clk,
             reset => counter_reset,
             count => counter_out

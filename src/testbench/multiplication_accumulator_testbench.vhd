@@ -94,6 +94,10 @@ begin
         NDin <= '0';
         wait for DATA_IN_PERIOD - CLOCK_PERIOD;
         
+        reset <= '1';
+        wait for CLOCK_PERIOD;
+        reset <= '0';
+        
         Ain <= std_logic_vector(to_unsigned(9, Ain'LENGTH));
         Bin <= std_logic_vector(to_unsigned(9, Bin'LENGTH));
         NDin <= '1';
