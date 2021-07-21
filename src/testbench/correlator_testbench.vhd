@@ -64,7 +64,7 @@ architecture Behavioral of correlator_testbench is
     signal DoutRdy, BRdy, EODout : STD_LOGIC;
     
     type INT_ARRAY is array (integer range <>) of integer;
-    constant dummyData : INT_ARRAY(1 to 10) := (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    constant dummyData : INT_ARRAY(1 to 10) := (15, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 begin
     clock_driver : process
     begin

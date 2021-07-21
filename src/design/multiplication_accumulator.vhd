@@ -1,6 +1,5 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
---use IEEE.NUMERIC_STD.ALL;
 
 entity multiplication_accumulator is
     Port ( Clk : in STD_LOGIC;

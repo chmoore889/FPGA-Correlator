@@ -94,9 +94,37 @@ begin
         NDin <= '0';
         wait for DATA_IN_PERIOD - CLOCK_PERIOD;
         
-        reset <= '1';
+        Ain <= std_logic_vector(to_unsigned(9, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(9, Bin'LENGTH));
+        NDin <= '1';
         wait for CLOCK_PERIOD;
-        reset <= '0';
+        NDin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        Ain <= std_logic_vector(to_unsigned(10, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(10, Bin'LENGTH));
+        NDin <= '1';
+        EODin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        EODin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        wait for CLOCK_PERIOD;
+        
+        Ain <= std_logic_vector(to_unsigned(5, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(5, Bin'LENGTH));
+        NDin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
+        
+        Ain <= std_logic_vector(to_unsigned(8, Ain'LENGTH));
+        Bin <= std_logic_vector(to_unsigned(8, Bin'LENGTH));
+        NDin <= '1';
+        wait for CLOCK_PERIOD;
+        NDin <= '0';
+        wait for DATA_IN_PERIOD - CLOCK_PERIOD;
         
         Ain <= std_logic_vector(to_unsigned(9, Ain'LENGTH));
         Bin <= std_logic_vector(to_unsigned(9, Bin'LENGTH));

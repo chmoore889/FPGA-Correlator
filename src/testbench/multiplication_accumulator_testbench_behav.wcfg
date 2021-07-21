@@ -10,13 +10,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="78334fs"></ZoomStartTime>
-      <ZoomEndTime time="548334fs"></ZoomEndTime>
-      <Cursor1Time time="470000fs"></Cursor1Time>
+      <ZoomStartTime time="25000fs"></ZoomStartTime>
+      <ZoomEndTime time="175001fs"></ZoomEndTime>
+      <Cursor1Time time="150000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="88"></ValueColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="13" />
    <wvobject fp_name="/multiplication_accumulator_testbench/clock" type="logic">
