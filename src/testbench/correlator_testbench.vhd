@@ -12,20 +12,28 @@ architecture Behavioral of correlator_testbench is
     signal clock : std_logic := '0';
 
     constant num_delays : integer := 8;
+    constant num_runs : integer := 2;
 
     component correlator is
         Generic (
             numDelays : integer
         );
-        Port ( clk : in STD_LOGIC;
+        Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
            Bin : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
+           Din : in STD_LOGIC_VECTOR (31 downto 0);
+           Nin : in STD_LOGIC_VECTOR (15 downto 0);
+           DinRdy : in STD_LOGIC;
+           Aout : out STD_LOGIC_VECTOR (15 downto 0);
+           Bout : out STD_LOGIC_VECTOR (15 downto 0);
+           BRdy : out STD_LOGIC;
+           EODout : out STD_LOGIC;
            Dout : out STD_LOGIC_VECTOR (31 downto 0);
-           DoutRdy : out STD_LOGIC;
-           Nout : out STD_LOGIC_VECTOR (15 downto 0));
+           Nout : out STD_LOGIC_VECTOR (15 downto 0);
+           DoutRdy : out STD_LOGIC);
     end component;
     
     procedure simulateData (dataInt : in integer;
@@ -48,12 +56,12 @@ architecture Behavioral of correlator_testbench is
         end if;
     end simulateData;
     
-    signal data, dataLatch : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal data, dataLatch, Aout, Bout : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
     signal NDin, NDLatch, EODin, EODLatch, Reset : STD_LOGIC := '0';
     
     signal Dout : STD_LOGIC_VECTOR (31 downto 0);
     signal Nout : STD_LOGIC_VECTOR (15 downto 0);
-    signal DoutRdy : STD_LOGIC;
+    signal DoutRdy, BRdy, EODout : STD_LOGIC;
     
     type INT_ARRAY is array (integer range <>) of integer;
     constant dummyData : INT_ARRAY(1 to 10) := (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -85,13 +93,45 @@ begin
         Reset => Reset,
         Dout => Dout,
         Nout => Nout,
-        DoutRdy => DoutRdy
+        DoutRdy => DoutRdy,
+        Din => (others => '0'),
+        Nin => (others => '0'),
+        DinRdy => '0',
+        Aout => Aout,
+        Bout => Bout,
+        BRdy => BRdy,
+        EODout => EODout
     );
     
     test_in : process
         variable isEnd : boolean := false;
     begin
+        Reset <= '1';
+        wait for CLOCK_PERIOD;
+        Reset <= '0';
+        wait for CLOCK_PERIOD;
+        
+        for X in 1 to num_runs loop
+            isEnd := false;
+            for I in dummyData'RANGE loop
+                if I = dummyData'RIGHT then
+                    isEnd := true;
+                end if;
+            
+                simulateData(
+                    dataInt => dummyData(I),
+                    isEnd => isEnd,
+                    dataCtrl => data,
+                    NDCtrl => NDin,
+                    EODCtrl => EODin
+                );
+            end loop;
+            
+            wait for CLOCK_PERIOD;
+        end loop;
+        
         --Make sure reset signal does its job
+        isEnd := false;
         for I in dummyData'RANGE loop
             simulateData(
                 dataInt => I,
@@ -107,7 +147,7 @@ begin
         Reset <= '0';
         wait for CLOCK_PERIOD;
         
-        --Procede to actual test of correct correlator results
+        isEnd := false;
         for I in dummyData'RANGE loop
             if I = dummyData'RIGHT then
                 isEnd := true;
@@ -129,23 +169,26 @@ begin
     verify_test : process
         variable accum : integer := 0;
     begin
-        for I in 0 to num_delays-1 loop        
-            wait until rising_edge(clock) AND DoutRdy = '1';
-            
-            accum := 0;
-            for X in dummyData'LEFT to dummyData'RIGHT - I loop
-                accum := accum + dummyData(X) * dummyData(X+I);
+        --+1 for Reset test
+        for X in 1 to num_runs + 1 loop
+            for I in 0 to num_delays-1 loop        
+                wait until rising_edge(clock) AND DoutRdy = '1';
+                
+                accum := 0;
+                for Y in dummyData'LEFT to dummyData'RIGHT - I loop
+                    accum := accum + dummyData(Y) * dummyData(Y+I);
+                end loop;
+                
+                assert accum = to_integer(unsigned(Dout)) report "DOut is incorrect - expected: "
+                & integer'image(accum)
+                & " actual: "
+                & integer'image(to_integer(unsigned(Dout)));
+                
+                assert (dummyData'RIGHT - I) = to_integer(unsigned(NOut)) report "NOut is incorrect - expected: "
+                & integer'image(dummyData'RIGHT - I)
+                & " actual: "
+                & integer'image(to_integer(unsigned(NOut)));
             end loop;
-            
-            assert accum = to_integer(unsigned(Dout)) report "DOut is incorrect - expected: "
-            & integer'image(accum)
-            & " actual: "
-            & integer'image(to_integer(unsigned(Dout)));
-            
-            assert (dummyData'RIGHT - I) = to_integer(unsigned(NOut)) report "NOut is incorrect - expected: "
-            & integer'image(dummyData'RIGHT - I)
-            & " actual: "
-            & integer'image(to_integer(unsigned(NOut)));
         end loop;
         
         wait for CLOCK_PERIOD;

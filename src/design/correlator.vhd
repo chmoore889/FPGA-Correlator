@@ -5,15 +5,22 @@ entity correlator is
     Generic (
         numDelays : integer := 8
     );
-    Port ( clk : in STD_LOGIC;
+    Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
            Bin : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0);
-           DoutRdy : out STD_LOGIC;
-           Nout : out STD_LOGIC_VECTOR (15 downto 0));
+           Din : in STD_LOGIC_VECTOR (31 downto 0);
+           Nin : in STD_LOGIC_VECTOR (15 downto 0);
+           DinRdy : in STD_LOGIC;
+           Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           BRdy : out STD_LOGIC := '0';
+           EODout : out STD_LOGIC;
+           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+           DoutRdy : out STD_LOGIC := '0');
 end correlator;
 
 architecture Behavioral of correlator is
@@ -46,6 +53,15 @@ architecture Behavioral of correlator is
     signal D_cascade : Arr32 (numDelays-1 downto 0) := (others => (others => '0'));
     signal DRdy_cascade, BRdy_cascade, EOD_cascade : STD_LOGIC_VECTOR (numDelays-1 downto 0) := (others => '0');
 begin
+    --Cascade connections of last module to the outside of this entity
+    Aout <= A_cascade(A_cascade'HIGH);
+    Bout <= B_cascade(B_cascade'HIGH);
+    BRdy <= BRdy_cascade(BRdy_cascade'HIGH);
+    EODout <= EOD_cascade(EOD_cascade'HIGH);
+    D_cascade(D_cascade'HIGH) <= Din;
+    DRdy_cascade(DRdy_cascade'HIGH) <= DinRdy;
+    N_cascade(N_cascade'HIGH) <= Nin;
+
     mult_accums : for I in 0 to numDelays-1 generate
         first : if I = 0 generate
             mult_first : multiplication_accumulator
@@ -69,7 +85,7 @@ begin
             );
         end generate first;
 
-        other : if I > 0 generate
+        other : if I > 0 generate 
             mult_other : multiplication_accumulator
             port map (
                 Clk => clk,
