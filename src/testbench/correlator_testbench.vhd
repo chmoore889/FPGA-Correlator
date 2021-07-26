@@ -37,19 +37,23 @@ architecture Behavioral of correlator_testbench is
     end component;
     
     procedure simulateData (dataInt : in integer;
-                            isEnd : in boolean;
+                            isEnd, delayEnd : in boolean := false;
                             signal dataCtrl : out STD_LOGIC_VECTOR (15 downto 0);
                             signal NDCtrl, EODCtrl : out STD_LOGIC) is
     begin
         dataCtrl <= std_logic_vector(to_unsigned(dataInt, dataCtrl'LENGTH));
         NDCtrl <= '1';
-        if isEnd then
+        if isEnd AND NOT delayEnd then
             EODCtrl <= '1';
         end if;
         wait for CLOCK_PERIOD;
         
         NDCtrl <= '0';
-        if isEnd then
+        if isEnd AND delayEnd then
+            EODCtrl <= '1';
+            wait for CLOCK_PERIOD;
+            EODCtrl <= '0';
+        elsif isEnd then
             EODCtrl <= '0';
         else
             wait for DATA_IN_PERIOD - CLOCK_PERIOD;
@@ -134,7 +138,7 @@ begin
         isEnd := false;
         for I in dummyData'RANGE loop
             simulateData(
-                dataInt => I,
+                dataInt => dummyData(I),
                 isEnd => isEnd,
                 dataCtrl => data,
                 NDCtrl => NDin,
@@ -154,8 +158,9 @@ begin
             end if;
         
             simulateData(
-                dataInt => I,
+                dataInt => dummyData(I),
                 isEnd => isEnd,
+                delayEnd => isEnd,
                 dataCtrl => data,
                 NDCtrl => NDin,
                 EODCtrl => EODin

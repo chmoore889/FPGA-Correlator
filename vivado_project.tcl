@@ -22,6 +22,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
    "${origin_dir}/src/design/correlator.vhd" \
+   "${origin_dir}/src/design/combiner.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/correlator_testbench.vhd" \
@@ -132,7 +133,7 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "VHDL" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "241" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "246" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -146,6 +147,7 @@ set files [list \
  [file normalize "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd"] \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
  [file normalize "${origin_dir}/src/design/correlator.vhd"] \
+ [file normalize "${origin_dir}/src/design/combiner.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -166,6 +168,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/src/design/correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/combiner.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
