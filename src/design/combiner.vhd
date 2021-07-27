@@ -15,13 +15,21 @@ end combiner;
 
 architecture Behavioral of combiner is
     signal Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal Buf2 : STD_LOGIC := '0';
 begin
     EODout <= EODin;
-    Dout <= Buf1;
+    Dout <= std_logic_vector(unsigned(Buf1) + unsigned(Din));
+    DRdy <= NDin AND Buf2;
 
     buffers : process(clk) begin
         if rising_edge(clk) then
-            
+            if Reset = '1' then
+                Buf1 <= (others => '0');
+                Buf2 <= '0';
+            elsif NDin = '1' then
+                Buf1 <= Din;
+                Buf2 <= NOT Buf2;
+            end if;
         end if;
     end process buffers;
 end Behavioral;
