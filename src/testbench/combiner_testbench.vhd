@@ -26,7 +26,7 @@ architecture Behavioral of combiner_testbench is
     signal EODin, EODlatch, NDin, NDlatch, Reset, Resetlatch, DRdy, EODout : STD_LOGIC := '0';
     
     type INT_ARRAY is array (integer range <>) of integer;
-    constant dummyData : INT_ARRAY(1 to 10) := (15, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    constant dummyData : INT_ARRAY := (15, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 begin
     clock_driver : process
     begin

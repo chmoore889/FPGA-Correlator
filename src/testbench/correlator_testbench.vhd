@@ -50,6 +50,7 @@ architecture Behavioral of correlator_testbench is
         
         NDCtrl <= '0';
         if isEnd AND delayEnd then
+            wait for DATA_IN_PERIOD - CLOCK_PERIOD;
             EODCtrl <= '1';
             wait for CLOCK_PERIOD;
             EODCtrl <= '0';
