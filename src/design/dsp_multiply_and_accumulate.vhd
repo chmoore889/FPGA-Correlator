@@ -9,7 +9,7 @@ entity dsp_multiply_and_accumulate is
            b : in STD_LOGIC_VECTOR (15 downto 0);
            clk : in STD_LOGIC;
            reset : in STD_LOGIC;
-           M2_select : in STD_LOGIC;
+           M1_select : in STD_LOGIC;
            output : out STD_LOGIC_VECTOR (31 downto 0));
 end dsp_multiply_and_accumulate;
 
@@ -34,8 +34,8 @@ begin
         end if;
     end process accum_reg;
     
-    -- Using the inmode to implement M2
-    inmode <= "000" & (NOT M2_select) & '0';
+    -- Using the inmode to implement M1
+    inmode <= "000" & (NOT M1_select) & '0';
     
     widened_a <= (widened_a'LEFT downto a'LENGTH => '0') & a;
     widened_b <= (widened_b'LEFT downto b'LENGTH => '0') & b;

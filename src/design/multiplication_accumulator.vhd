@@ -38,7 +38,7 @@ begin
                    b : in STD_LOGIC_VECTOR (15 downto 0);
                    clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
-                   M2_select : in STD_LOGIC;
+                   M1_select : in STD_LOGIC;
                    output : out STD_LOGIC_VECTOR (31 downto 0));
         end component;
         
@@ -60,7 +60,7 @@ begin
             b => Bin,
             clk => Clk,
             reset => dsp_reset,
-            M2_select => mux_selector,
+            M1_select => mux_selector,
             output => multiplier_out
         );
     end block mult_mux_selects;
@@ -70,8 +70,7 @@ begin
     begin
         new_data_reset <= Reset OR EODDelay;
         
-        BRdy <= NDin when firstDataDone = '1' else
-                '0';
+        BRdy <= NDin AND firstDataDone;
         
         b_out : process (Clk) begin
             if rising_edge(Clk) then
