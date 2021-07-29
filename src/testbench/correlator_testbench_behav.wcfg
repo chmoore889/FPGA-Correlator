@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="3791800fs"></ZoomStartTime>
-      <ZoomEndTime time="3927801fs"></ZoomEndTime>
+      <ZoomStartTime time="3802258fs"></ZoomStartTime>
+      <ZoomEndTime time="4012522fs"></ZoomEndTime>
       <Cursor1Time time="3905000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="72"></ValueColumnWidth>
+      <ValueColumnWidth column_width="68"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="12" />
+   <WVObjectSize size="11" />
    <wvobject fp_name="/correlator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -62,9 +62,5 @@
    <wvobject fp_name="/correlator_testbench/BRdy" type="logic">
       <obj_property name="ElementShortName">BRdy</obj_property>
       <obj_property name="ObjectShortName">BRdy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/correlator_testbench/EODout" type="logic">
-      <obj_property name="ElementShortName">EODout</obj_property>
-      <obj_property name="ObjectShortName">EODout</obj_property>
    </wvobject>
 </wave_config>
