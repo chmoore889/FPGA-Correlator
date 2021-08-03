@@ -23,7 +23,7 @@ begin
 
     buffers : process(clk) begin
         if rising_edge(clk) then
-            if Reset = '1' then
+            if Reset = '1' OR EODin = '1' then
                 Buf1 <= (others => '0');
                 Buf2 <= '0';
             elsif NDin = '1' then

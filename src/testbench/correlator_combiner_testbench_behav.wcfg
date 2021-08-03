@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="correlator_combiner_testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="correlator_combiner_testbench" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="4261093fs"></ZoomStartTime>
+      <ZoomEndTime time="4949094fs"></ZoomEndTime>
+      <Cursor1Time time="4830000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="64"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/correlator_combiner_testbench/clock" type="logic">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/dataLatch" type="array">
+      <obj_property name="ElementShortName">dataLatch[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dataLatch[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/Aout" type="array">
+      <obj_property name="ElementShortName">Aout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Aout[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/Bout" type="array">
+      <obj_property name="ElementShortName">Bout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Bout[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/NDLatch" type="logic">
+      <obj_property name="ElementShortName">NDLatch</obj_property>
+      <obj_property name="ObjectShortName">NDLatch</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/EODLatch" type="logic">
+      <obj_property name="ElementShortName">EODLatch</obj_property>
+      <obj_property name="ObjectShortName">EODLatch</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/Reset" type="logic">
+      <obj_property name="ElementShortName">Reset</obj_property>
+      <obj_property name="ObjectShortName">Reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/Dout" type="array">
+      <obj_property name="ElementShortName">Dout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Dout[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/Nout" type="array">
+      <obj_property name="ElementShortName">Nout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Nout[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/correlator_combiner_testbench/DoutRdy" type="logic">
+      <obj_property name="ElementShortName">DoutRdy</obj_property>
+      <obj_property name="ObjectShortName">DoutRdy</obj_property>
+   </wvobject>
+</wave_config>

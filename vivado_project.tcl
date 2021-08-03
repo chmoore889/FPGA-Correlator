@@ -29,6 +29,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/correlator_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/combiner_testbench.vhd" \
    "${origin_dir}/src/testbench/combiner_testbench_behav.wcfg" \
+   "${origin_dir}/src/testbench/correlator_combiner_testbench.vhd" \
+   "${origin_dir}/src/testbench/correlator_combiner_testbench_behav.wcfg" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -136,7 +138,7 @@ set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "VHDL" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "276" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "307" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -292,6 +294,37 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 set obj [get_filesets combiner]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
 set_property -name "top" -value "combiner_testbench" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'correlator_combiner' fileset (if not found)
+if {[string equal [get_filesets -quiet correlator_combiner] ""]} {
+  create_fileset -simset correlator_combiner
+}
+
+# Set 'correlator_combiner' fileset object
+set obj [get_filesets correlator_combiner]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/correlator_combiner_testbench.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/correlator_combiner_testbench_behav.wcfg"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'correlator_combiner' fileset file properties for remote files
+set file "$origin_dir/src/testbench/correlator_combiner_testbench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets correlator_combiner] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'correlator_combiner' fileset file properties for local files
+# None
+
+# Set 'correlator_combiner' fileset properties
+set obj [get_filesets correlator_combiner]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "correlator_combiner_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj

@@ -61,20 +61,23 @@ begin
         Reset <= '0';
         wait for CLOCK_PERIOD;
         
-        for I in dummyData'RANGE loop
-            Din <= std_logic_vector(to_unsigned(dummyData(I), Din'LENGTH));
-            NDin <= '1';
-            if I = dummyData'RIGHT then
-                EODin <= '1';
-            end if;
-            wait for CLOCK_PERIOD;
-            
-            NDin <= '0';
-            if I = dummyData'RIGHT then
-                EODin <= '0';
-            else
-                wait for DATA_IN_PERIOD;
-            end if;
+        for X in 1 to 2 loop
+            for I in dummyData'RANGE loop
+                Din <= std_logic_vector(to_unsigned(dummyData(I), Din'LENGTH));
+                NDin <= '1';
+                if I = dummyData'RIGHT then
+                    EODin <= '1';
+                end if;
+                wait for CLOCK_PERIOD;
+                
+                NDin <= '0';
+                if I = dummyData'RIGHT then
+                    EODin <= '0';
+                else
+                    wait for DATA_IN_PERIOD;
+                end if;
+            end loop;
+            wait for DATA_IN_PERIOD;
         end loop;
         
         wait for CLOCK_PERIOD;
