@@ -3,30 +3,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use std.env.finish;
 
-entity correlator_combiner_testbench is
-end correlator_combiner_testbench;
+entity divided_correlator is
+end divided_correlator;
 
-architecture Behavioral of correlator_combiner_testbench is
+architecture Behavioral of divided_correlator is
     constant CLOCK_PERIOD : time := 10ns;
-    constant DATA_IN_PERIOD : time := CLOCK_PERIOD * 10;
+    constant DATA_IN_PERIOD : time := CLOCK_PERIOD * 5;
     signal clock : std_logic := '0';
-    
-    constant num_runs : integer := 2;
-    
-    component combiner is
-        Port ( clk : in STD_LOGIC;
-               Din : in STD_LOGIC_VECTOR (15 downto 0);
-               EODin : in STD_LOGIC;
-               NDin : in STD_LOGIC;
-               Reset : in STD_LOGIC;
-               Dout : out STD_LOGIC_VECTOR (15 downto 0);
-               DRdy : out STD_LOGIC;
-               EODout : out STD_LOGIC);
-    end component;
     
     component correlator is
         Generic (
-            numDelays : integer := 8
+            numDelays : integer
         );
         Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -45,6 +32,26 @@ architecture Behavioral of correlator_combiner_testbench is
            Nout : out STD_LOGIC_VECTOR (15 downto 0);
            DoutRdy : out STD_LOGIC);
     end component;
+    
+    COMPONENT uint32_to_single
+      PORT (
+        s_axis_a_tvalid : IN STD_LOGIC;
+        s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        m_axis_result_tvalid : OUT STD_LOGIC;
+        m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+      );
+    END COMPONENT;
+    
+    COMPONENT single_divider
+      PORT (
+        s_axis_a_tvalid : IN STD_LOGIC;
+        s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        s_axis_b_tvalid : IN STD_LOGIC;
+        s_axis_b_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        m_axis_result_tvalid : OUT STD_LOGIC;
+        m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+      );
+    END COMPONENT;
     
     procedure simulateData (dataInt : in integer;
                             isEnd, delayEnd : in boolean := false;
@@ -74,12 +81,12 @@ architecture Behavioral of correlator_combiner_testbench is
     signal data, dataLatch, Aout, Bout : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
     signal NDin, NDLatch, EODin, EODLatch, Reset : STD_LOGIC := '0';
     
-    signal Dout, Dout2 : STD_LOGIC_VECTOR (31 downto 0);
-    signal Nout, Nout2, combinerDout1, combinerDout2 : STD_LOGIC_VECTOR (15 downto 0);
-    signal DoutRdy, DoutRdy2, BRdy, EODout, combinerDRdy1, combinerDRdy2, combinerEODout1, combinerEODout2, combinedDRdy, combinedEODout : STD_LOGIC;
+    signal Dout, DoutFloat, paddedNout, NoutFloat, dividedResult : STD_LOGIC_VECTOR (31 downto 0);
+    signal Nout : STD_LOGIC_VECTOR (15 downto 0);
+    signal DoutRdy, DoutFloatRdy, NoutFloatRdy, dividedResultRdy, BRdy, EODout : STD_LOGIC;
     
     type INT_ARRAY is array (integer range <>) of integer;
-    constant dummyData : INT_ARRAY(1 to 24) := (15, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24);
+    constant dummyData : INT_ARRAY(1 to 10) := (15, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 begin
     clock_driver : process
     begin
@@ -94,8 +101,11 @@ begin
             NDLatch <= NDin;
         end if;
     end process latches;
-
-    correlator_to_test : correlator
+    
+    to_test : correlator
+    generic map(
+        numDelays => 8
+    )
     port map (
         Clk => clock,
         Ain => dataLatch,
@@ -106,59 +116,40 @@ begin
         Dout => Dout,
         Nout => Nout,
         DoutRdy => DoutRdy,
-        Din => Dout2,
-        Nin => Nout2,
-        DinRdy => DoutRdy2,
+        Din => (others => '0'),
+        Nin => (others => '0'),
+        DinRdy => '0',
         Aout => Aout,
         Bout => Bout,
         BRdy => BRdy,
         EODout => EODout
     );
     
-    combiner_to_test_1 : combiner
-    port map(
-        clk => clock,
-        Din => Aout,
-        EODin => EODout,
-        NDin => BRdy,
-        Reset => Reset,
-        Dout => combinerDout1,
-        DRdy => combinerDRdy1,
-        EODout => combinerEODout1
+    dout_to_single : uint32_to_single
+    PORT MAP (
+      s_axis_a_tvalid => DoutRdy,
+      s_axis_a_tdata => Dout,
+      m_axis_result_tvalid => DoutFloatRdy,
+      m_axis_result_tdata => DoutFloat
     );
     
-    combiner_to_test_2 : combiner
-    port map(
-        clk => clock,
-        Din => Bout,
-        EODin => EODout,
-        NDin => BRdy,
-        Reset => Reset,
-        Dout => combinerDout2,
-        DRdy => combinerDRdy2,
-        EODout => combinerEODout2
+    paddedNout <= (paddedNout'HIGH downto Nout'HIGH + 1 => '0') & Nout;
+    nout_to_single : uint32_to_single
+    PORT MAP (
+      s_axis_a_tvalid => DoutRdy,
+      s_axis_a_tdata => paddedNout,
+      m_axis_result_tvalid => NoutFloatRdy,
+      m_axis_result_tdata => NoutFloat
     );
     
-    combinedDRdy <= combinerDRdy1 AND combinerDRdy2;
-    combinedEODout <= combinerEODout1 AND combinerEODout2; 
-    correlator_to_test_2 : correlator
-    port map (
-        Clk => clock,
-        Ain => combinerDout1,
-        Bin => combinerDout2,
-        NDin => combinedDRdy,
-        EODin => combinedEODout,
-        Reset => Reset,
-        Dout => Dout2,
-        Nout => Nout2,
-        DoutRdy => DoutRdy2,
-        Din => (others => '0'),
-        Nin => (others => '0'),
-        DinRdy => '0'
---        Aout => Aout,
---        Bout => Bout,
---        BRdy => BRdy,
---        EODout => EODout
+    divider : single_divider
+    PORT MAP (
+      s_axis_a_tvalid => DoutFloatRdy,
+      s_axis_a_tdata => DoutFloat,
+      s_axis_b_tvalid => NoutFloatRdy,
+      s_axis_b_tdata => NoutFloat,
+      m_axis_result_tvalid => dividedResultRdy,
+      m_axis_result_tdata => dividedResult
     );
     
     test_in : process
@@ -169,7 +160,6 @@ begin
         Reset <= '0';
         wait for CLOCK_PERIOD;
         
-        isEnd := false;
         for I in dummyData'RANGE loop
             if I = dummyData'RIGHT then
                 isEnd := true;
@@ -184,7 +174,10 @@ begin
             );
         end loop;
         
-        wait for 18 * CLOCK_PERIOD;
+        wait until falling_edge(DoutRdy);
+        
+        wait for CLOCK_PERIOD;
+        
         finish;
     end process test_in;
 end Behavioral;

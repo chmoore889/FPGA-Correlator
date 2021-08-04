@@ -18,6 +18,17 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+   "c:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" \
+   "c:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" \
+  ]
+  foreach ifile $files {
+    if { ![file isfile $ifile] } {
+      puts " Could not find local file $ifile "
+      set status false
+    }
+  }
+
+  set files [list \
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
@@ -31,6 +42,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/combiner_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/correlator_combiner_testbench.vhd" \
    "${origin_dir}/src/testbench/correlator_combiner_testbench_behav.wcfg" \
+   "${origin_dir}/src/testbench/divided_correlator.vhd" \
+   "${origin_dir}/src/testbench/divided_correlator_behav.wcfg" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -135,10 +148,18 @@ set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
 set_property -name "part" -value "xc7k160tfbg484-3" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
-set_property -name "simulator_language" -value "VHDL" -objects $obj
+set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "307" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "319" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -155,6 +176,13 @@ set files [list \
  [file normalize "${origin_dir}/src/design/combiner.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
+
+# Add local files from the original project (-no_copy_sources specified)
+set files [list \
+ [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" ]\
+ [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" ]\
+]
+set added_files [add_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/src/design/counter.vhd"
@@ -184,7 +212,22 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
-# None
+set file "uint32_to_single/uint32_to_single.xci"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
+set file "single_divider/single_divider.xci"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
@@ -327,6 +370,36 @@ set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $o
 set_property -name "top" -value "correlator_combiner_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'divided_correlator' fileset (if not found)
+if {[string equal [get_filesets -quiet divided_correlator] ""]} {
+  create_fileset -simset divided_correlator
+}
+
+# Set 'divided_correlator' fileset object
+set obj [get_filesets divided_correlator]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/divided_correlator.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/divided_correlator_behav.wcfg"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'divided_correlator' fileset file properties for remote files
+set file "$origin_dir/src/testbench/divided_correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets divided_correlator] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'divided_correlator' fileset file properties for local files
+# None
+
+# Set 'divided_correlator' fileset properties
+set obj [get_filesets divided_correlator]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "divided_correlator" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
 # Set 'utils_1' fileset object
