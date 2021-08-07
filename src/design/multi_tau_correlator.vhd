@@ -7,7 +7,7 @@ entity multi_tau_correlator is
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0'); --Normalized single precision value.
+           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0'); --Normalized single-precision value.
            DoutRdy : out STD_LOGIC := '0');
 end multi_tau_correlator;
 
