@@ -18,17 +18,6 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "C:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" \
-   "C:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" \
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find local file $ifile "
-      set status false
-    }
-  }
-
-  set files [list \
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
@@ -182,13 +171,6 @@ set files [list \
 ]
 add_files -norecurse -fileset $obj $files
 
-# Add local files from the original project (-no_copy_sources specified)
-set files [list \
- [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" ]\
- [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" ]\
-]
-set added_files [add_files -fileset sources_1 $files]
-
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/src/design/counter.vhd"
 set file [file normalize $file]
@@ -227,22 +209,7 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
-set file "uint32_to_single/uint32_to_single.xci"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
-set file "single_divider/single_divider.xci"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
+# None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
