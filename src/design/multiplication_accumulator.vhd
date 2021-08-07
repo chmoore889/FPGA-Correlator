@@ -44,16 +44,20 @@ begin
         
         signal dsp_reset : STD_LOGIC;
     begin
+        dsp_reset <= Reset OR EODDelay;
         mux_selector <= NOT Reset AND NDin;
     
         Bout <= Buf1;
         process (Clk) begin
-            if rising_edge(Clk) AND NDin = '1' then
-                Buf1 <= Bin;
+            if rising_edge(Clk) then
+                if dsp_reset = '1' then
+                    Buf1 <= (others => '0');
+                elsif NDin = '1' then
+                    Buf1 <= Bin;
+                end if;
             end if;
         end process;
         
-        dsp_reset <= Reset OR EODDelay;
         multiplier : dsp_multiply_and_accumulate
         port map (
             a => Ain,

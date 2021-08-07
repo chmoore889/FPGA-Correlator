@@ -18,8 +18,8 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "c:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" \
-   "c:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" \
+   "C:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" \
+   "C:/Users/Christopher/Desktop/DCS/fpga_mac/vivado_project/vivado_project.srcs/sources_1/ip/single_divider/single_divider.xci" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -34,6 +34,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
    "${origin_dir}/src/design/correlator.vhd" \
    "${origin_dir}/src/design/combiner.vhd" \
+   "${origin_dir}/src/design/multi_tau_correlator.vhd" \
+   "${origin_dir}/src/design/scaler.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/correlator_testbench.vhd" \
@@ -44,6 +46,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/correlator_combiner_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/divided_correlator.vhd" \
    "${origin_dir}/src/testbench/divided_correlator_behav.wcfg" \
+   "${origin_dir}/src/testbench/multi_tau_correlator_testbench.vhd" \
+   "${origin_dir}/src/testbench/multi_tau_correlator_testbench_behav.wcfg" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -157,9 +161,8 @@ set_property -name "webtalk.modelsim_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.questa_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "319" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "356" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -174,6 +177,8 @@ set files [list \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
  [file normalize "${origin_dir}/src/design/correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/combiner.vhd"] \
+ [file normalize "${origin_dir}/src/design/multi_tau_correlator.vhd"] \
+ [file normalize "${origin_dir}/src/design/scaler.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -210,6 +215,16 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
+set file "$origin_dir/src/design/multi_tau_correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/scaler.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 
 # Set 'sources_1' fileset file properties for local files
 set file "uint32_to_single/uint32_to_single.xci"
@@ -231,7 +246,7 @@ set_property -name "registered_with_manager" -value "1" -objects $file_obj
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "correlator" -objects $obj
+set_property -name "top" -value "multi_tau_correlator" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
@@ -399,6 +414,36 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 set obj [get_filesets divided_correlator]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
 set_property -name "top" -value "divided_correlator" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'multi_tau_correlator' fileset (if not found)
+if {[string equal [get_filesets -quiet multi_tau_correlator] ""]} {
+  create_fileset -simset multi_tau_correlator
+}
+
+# Set 'multi_tau_correlator' fileset object
+set obj [get_filesets multi_tau_correlator]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/multi_tau_correlator_testbench.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/multi_tau_correlator_testbench_behav.wcfg"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'multi_tau_correlator' fileset file properties for remote files
+set file "$origin_dir/src/testbench/multi_tau_correlator_testbench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets multi_tau_correlator] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'multi_tau_correlator' fileset file properties for local files
+# None
+
+# Set 'multi_tau_correlator' fileset properties
+set obj [get_filesets multi_tau_correlator]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "multi_tau_correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
