@@ -162,7 +162,7 @@ set_property -name "webtalk.questa_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "356" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "360" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
