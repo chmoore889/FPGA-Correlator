@@ -18,16 +18,6 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "C:/Users/Christopher/Desktop/DCS/fpga/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" \
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find local file $ifile "
-      set status false
-    }
-  }
-
-  set files [list \
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
@@ -35,7 +25,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/combiner.vhd" \
    "${origin_dir}/src/design/multi_tau_correlator.vhd" \
    "${origin_dir}/src/design/scaler.vhd" \
-   "${origin_dir}/src/design/single_divider/single_divider.xci" \
+   "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
+   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
    "${origin_dir}/src/constraints/Nexys-A7-100T-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
@@ -157,15 +148,15 @@ set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "9" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "362" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "364" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -182,15 +173,10 @@ set files [list \
  [file normalize "${origin_dir}/src/design/combiner.vhd"] \
  [file normalize "${origin_dir}/src/design/multi_tau_correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/scaler.vhd"] \
- [file normalize "${origin_dir}/src/design/single_divider/single_divider.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
 ]
 add_files -norecurse -fileset $obj $files
-
-# Add local files from the original project (-no_copy_sources specified)
-set files [list \
- [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/sources_1/ip/uint32_to_single/uint32_to_single.xci" ]\
-]
-set added_files [add_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/src/design/counter.vhd"
@@ -228,7 +214,16 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
-set file "$origin_dir/src/design/single_divider/single_divider.xci"
+set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
+set file "$origin_dir/src/design/ip/uint32_to_single/uint32_to_single.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
@@ -239,14 +234,7 @@ set_property -name "registered_with_manager" -value "1" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
-set file "uint32_to_single/uint32_to_single.xci"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
+# None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
