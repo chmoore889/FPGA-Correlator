@@ -27,6 +27,8 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/scaler.vhd" \
    "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
    "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
+   "${origin_dir}/src/design/ip/microblaze_controller/microblaze_controller.xci" \
+   "${origin_dir}/src/design/top.vhd" \
    "${origin_dir}/src/constraints/Nexys-A7-100T-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
@@ -149,14 +151,16 @@ set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
 set_property -name "target_simulator" -value "Riviera" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "14" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "14" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "6" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "20" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "364" -objects $obj
+set_property -name "xpm_libraries" -value "XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -175,6 +179,8 @@ set files [list \
  [file normalize "${origin_dir}/src/design/scaler.vhd"] \
  [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
  [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/microblaze_controller/microblaze_controller.xci"] \
+ [file normalize "${origin_dir}/src/design/top.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -232,13 +238,27 @@ if { ![get_property "is_locked" $file_obj] } {
 }
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 
+set file "$origin_dir/src/design/ip/microblaze_controller/microblaze_controller.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
+set file "$origin_dir/src/design/top.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 
 # Set 'sources_1' fileset file properties for local files
 # None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "multi_tau_correlator" -objects $obj
+set_property -name "top" -value "top" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
@@ -451,6 +471,8 @@ set obj [get_filesets utils_1]
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
 
+
+# Adding sources referenced in BDs, if not already added
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
     create_run -name synth_1 -part xc7a100tcsg324-1 -flow {Vivado Synthesis 2020} -strategy "Vivado Synthesis Defaults" -report_strategy {No Reports} -constrset constrs_1
