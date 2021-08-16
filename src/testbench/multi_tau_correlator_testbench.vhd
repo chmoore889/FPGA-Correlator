@@ -82,7 +82,7 @@ begin
             end if;
         end loop;
         
-        wait for 85 * CLOCK_PERIOD;
+        wait for (85 + 8) * CLOCK_PERIOD;
     
         finish;
     end process test_in;

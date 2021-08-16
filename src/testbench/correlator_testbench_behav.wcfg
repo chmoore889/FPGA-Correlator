@@ -6,17 +6,18 @@
       <db_ref path="correlator_testbench_behav.wdb" id="1">
          <top_modules>
             <top_module name="correlator_testbench" />
+            <top_module name="glbl" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="3802258fs"></ZoomStartTime>
-      <ZoomEndTime time="4012522fs"></ZoomEndTime>
-      <Cursor1Time time="3905000fs"></Cursor1Time>
+      <ZoomStartTime time="895347fs"></ZoomStartTime>
+      <ZoomEndTime time="1033748fs"></ZoomEndTime>
+      <Cursor1Time time="995347fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="68"></ValueColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="11" />
    <wvobject fp_name="/correlator_testbench/clock" type="logic">

@@ -14,7 +14,8 @@ end multi_tau_correlator;
 architecture Behavioral of multi_tau_correlator is
     component correlator is
         Generic (
-            numDelays : integer := 8
+            numDelays : integer := 8;
+            additionalLatency : integer := 0
         );
         Port ( Clk : in STD_LOGIC;
                Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -137,7 +138,8 @@ begin
 
     first_sdc : correlator
     generic map (
-        numDelays => 16
+        numDelays => 16,
+        additionalLatency => num_combiners
     )
     port map (
         Clk => Clk,
@@ -158,7 +160,7 @@ begin
         DoutRdy => Dout_Int_Rdy
     );
     
-    other : for I in 1 to 8 generate
+    other : for I in 1 to num_combiners generate
         combiners_and_correlator : block
             signal A_combiner_Dout, B_combiner_Dout : STD_LOGIC_VECTOR (15 downto 0);
             signal A_DRdy, B_DRdy, A_EODout, B_EODout : STD_LOGIC;
@@ -192,6 +194,10 @@ begin
             correlator_NDin <= A_DRdy AND B_DRdy;
             correlator_EODin <= A_EODout AND B_EODout;
             first_sdc : correlator
+            generic map (
+                numDelays => 8,
+                additionalLatency => num_combiners - I
+            )
             port map (
                 Clk => Clk,
                 Ain => A_combiner_Dout,

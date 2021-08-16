@@ -3,7 +3,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity correlator is
     Generic (
-        numDelays : integer := 8
+        numDelays : integer := 8;
+        additionalLatency : integer := 0
     );
     Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -43,6 +44,8 @@ architecture Behavioral of correlator is
            DoutRdy : out STD_LOGIC := '0');
     end component;
     
+    signal EODinDelayed : STD_LOGIC;
+    
     type Arr32 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (31 downto 0);
     type Arr16 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (15 downto 0);
     
@@ -57,10 +60,29 @@ begin
     Aout <= A_cascade(A_cascade'HIGH);
     Bout <= B_cascade(B_cascade'HIGH);
     BRdy <= BRdy_cascade(BRdy_cascade'HIGH);
-    EODout <= EOD_cascade(EOD_cascade'HIGH);
+    EODout <= EODin;
     D_cascade(D_cascade'HIGH) <= Din;
     DRdy_cascade(DRdy_cascade'HIGH) <= DinRdy;
     N_cascade(N_cascade'HIGH) <= Nin;
+    
+    eod_delay : block
+        signal EODinPipe : STD_LOGIC_VECTOR(additionalLatency downto 0) := (others => '0');
+    begin
+        EODinDelayed <= EODinPipe(additionalLatency);
+        EODinPipe(0) <= EODin;
+        
+        delay : if additionalLatency > 0 generate
+            process(clk) begin
+                if rising_edge(clk) then
+                    if Reset = '1' then
+                        EODinPipe(EODinPipe'HIGH downto 1) <= (others => '0');
+                    else
+                        EODinPipe(EODinPipe'HIGH downto 1) <= EODinPipe(EODinPipe'HIGH - 1 downto 0);
+                    end if;
+                end if;
+            end process;
+        end generate delay;
+    end block eod_delay;
 
     mult_accums : for I in 0 to numDelays-1 generate
         first : if I = 0 generate
@@ -71,7 +93,7 @@ begin
                 Ain => Ain,
                 Bin => Bin,
                 NDin => NDin,
-                EODin => EODin,
+                EODin => EODinDelayed,
                 Din => D_cascade(I),
                 DinRdy => DRdy_cascade(I),
                 Nin => N_cascade(I),

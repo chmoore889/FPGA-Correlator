@@ -18,15 +18,15 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+   "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
+   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
+   "${origin_dir}/src/design/combiner.vhd" \
+   "${origin_dir}/src/design/correlator.vhd" \
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
-   "${origin_dir}/src/design/correlator.vhd" \
-   "${origin_dir}/src/design/combiner.vhd" \
-   "${origin_dir}/src/design/multi_tau_correlator.vhd" \
    "${origin_dir}/src/design/scaler.vhd" \
-   "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
-   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
+   "${origin_dir}/src/design/multi_tau_correlator.vhd" \
    "${origin_dir}/src/design/ip/microblaze_controller/microblaze_controller.xci" \
    "${origin_dir}/src/design/top.vhd" \
    "${origin_dir}/src/constraints/Nexys-A7-100T-Master.xdc" \
@@ -148,19 +148,16 @@ set_property -name "platform.board_id" -value "nexys-a7-100t" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
-set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "target_simulator" -value "Riviera" -objects $obj
 set_property -name "webtalk.activehdl_export_sim" -value "20" -objects $obj
 set_property -name "webtalk.ies_export_sim" -value "20" -objects $obj
 set_property -name "webtalk.modelsim_export_sim" -value "20" -objects $obj
 set_property -name "webtalk.questa_export_sim" -value "20" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "20" -objects $obj
+set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "20" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "6" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "20" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "364" -objects $obj
-set_property -name "xpm_libraries" -value "XPM_MEMORY" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "411" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -170,56 +167,21 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
+ [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
+ [file normalize "${origin_dir}/src/design/combiner.vhd"] \
+ [file normalize "${origin_dir}/src/design/correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/counter.vhd"] \
  [file normalize "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd"] \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
- [file normalize "${origin_dir}/src/design/correlator.vhd"] \
- [file normalize "${origin_dir}/src/design/combiner.vhd"] \
- [file normalize "${origin_dir}/src/design/multi_tau_correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/scaler.vhd"] \
- [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
- [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
+ [file normalize "${origin_dir}/src/design/multi_tau_correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/ip/microblaze_controller/microblaze_controller.xci"] \
  [file normalize "${origin_dir}/src/design/top.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/src/design/counter.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/dsp_multiply_and_accumulate.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/multiplication_accumulator.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/correlator.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/combiner.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/multi_tau_correlator.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/scaler.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
 set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -237,6 +199,41 @@ if { ![get_property "is_locked" $file_obj] } {
   set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
 }
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
+set file "$origin_dir/src/design/combiner.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/counter.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/dsp_multiply_and_accumulate.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/multiplication_accumulator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/scaler.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/multi_tau_correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/src/design/ip/microblaze_controller/microblaze_controller.xci"
 set file [file normalize $file]
@@ -258,7 +255,7 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "top" -objects $obj
+set_property -name "top" -value "multi_tau_correlator" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
@@ -276,6 +273,7 @@ set file "$origin_dir/src/constraints/Nexys-A7-100T-Master.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]

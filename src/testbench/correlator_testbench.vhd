@@ -12,11 +12,12 @@ architecture Behavioral of correlator_testbench is
     signal clock : std_logic := '0';
 
     constant num_delays : integer := 8;
-    constant num_runs : integer := 2;
+    constant num_runs : integer := 1;
 
     component correlator is
         Generic (
-            numDelays : integer
+            numDelays : integer;
+            additionalLatency : integer := 5
         );
         Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -132,7 +133,7 @@ begin
                 );
             end loop;
             
-            wait for CLOCK_PERIOD;
+            wait for CLOCK_PERIOD * 20;
         end loop;
         
         --Make sure reset signal does its job
@@ -146,6 +147,8 @@ begin
                 EODCtrl => EODin
             );
         end loop;
+        
+        wait for CLOCK_PERIOD * 20;
     
         Reset <= '1';
         wait for CLOCK_PERIOD;
