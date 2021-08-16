@@ -148,6 +148,7 @@ set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
+set_property -name "target_simulator" -value "Riviera" -objects $obj
 set_property -name "webtalk.activehdl_export_sim" -value "14" -objects $obj
 set_property -name "webtalk.ies_export_sim" -value "14" -objects $obj
 set_property -name "webtalk.modelsim_export_sim" -value "14" -objects $obj
