@@ -1,4 +1,1 @@
 vivado_project/*
-
-src/design/ip/*
-!*.xci
