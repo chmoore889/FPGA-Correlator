@@ -6,8 +6,9 @@ entity scaler is
     Port ( Clk : in STD_LOGIC;
            Din : in STD_LOGIC_VECTOR (31 downto 0);
            DinRdy : in STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0);
-           DoutRdy : out STD_LOGIC);
+           Reset : in STD_LOGIC;
+           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           DoutRdy : out STD_LOGIC := '0');
 end scaler;
 
 architecture Behavioral of scaler is
@@ -27,19 +28,22 @@ architecture Behavioral of scaler is
     
     signal count : STD_LOGIC_VECTOR (2 downto 0);
     signal counter_reset : STD_LOGIC;
+    
+    signal DoutReg : STD_LOGIC_VECTOR (31 downto 0);
+    signal DoutRdyReg : STD_LOGIC;
 begin
-    Dout <= Din(31) & new_exponent & Din(22 downto 0);
-    DoutRdy <= DinRdy;
+    DoutReg <= Din(31) & new_exponent & Din(22 downto 0);
+    DoutRdyReg <= DinRdy;
 
     orig_exponent <= Din(30 downto 23);    
     new_exponent <= std_logic_vector(unsigned(orig_exponent) - (2 * num_to_divide));
     
     process (clk, counter_reset) begin
-        if counter_reset = '1' then
-            first_8_done <= '0';
-            num_to_divide <= (others => '0');
-        elsif rising_edge(clk) then
-            if count = "111" then
+        if rising_edge(clk) then
+            if counter_reset = '1' then
+                first_8_done <= '0';
+                num_to_divide <= (others => '0');
+            elsif count = "111" then
                 if first_8_done = '1' then
                     num_to_divide <= num_to_divide + 1;
                 else
@@ -49,7 +53,7 @@ begin
         end if;
     end process;
     
-    counter_reset <= NOT DinRdy;
+    counter_reset <= (NOT DinRdy) OR Reset;
     counter_inst : counter
     generic map(
         countBitSize => 3
@@ -60,4 +64,16 @@ begin
         reset => counter_reset,
         count => count
     );
+    
+    output_regs : process (clk) begin
+        if rising_edge(clk) then
+            if counter_reset = '1' then
+                Dout <= (others => '0');
+                DoutRdy <= '0';
+            else
+                Dout <= DoutReg;
+                DoutRdy <= DoutRdyReg;
+            end if;
+        end if;
+    end process output_regs;
 end Behavioral;

@@ -58,7 +58,7 @@ begin
        USE_PATTERN_DETECT => "NO_PATDET", -- Enable pattern detect ("PATDET" or "NO_PATDET")
        -- Register Control Attributes: Pipeline Register Configuration
        ACASCREG => 0,                     -- Number of pipeline stages between A/ACIN and ACOUT (0, 1 or 2)
-       ADREG => 0,                        -- Number of pipeline stages for pre-adder (0 or 1)
+       ADREG => 1,                        -- Number of pipeline stages for pre-adder (0 or 1)
        ALUMODEREG => 0,                   -- Number of pipeline stages for ALUMODE (0 or 1)
        AREG => 0,                         -- Number of pipeline stages for A (0, 1 or 2)
        BCASCREG => 0,                     -- Number of pipeline stages between B/BCIN and BCOUT (0, 1 or 2)
@@ -66,7 +66,7 @@ begin
        CARRYINREG => 0,                   -- Number of pipeline stages for CARRYIN (0 or 1)
        CARRYINSELREG => 0,                -- Number of pipeline stages for CARRYINSEL (0 or 1)
        CREG => 0,                         -- Number of pipeline stages for C (0 or 1)
-       DREG => 0,                         -- Number of pipeline stages for D (0 or 1)
+       DREG => 1,                         -- Number of pipeline stages for D (0 or 1)
        INMODEREG => 0,                    -- Number of pipeline stages for INMODE (0 or 1)
        MREG => 0,                         -- Number of multiplier pipeline stages (0 or 1)
        OPMODEREG => 0,                    -- Number of pipeline stages for OPMODE (0 or 1)

@@ -48,6 +48,7 @@ architecture Behavioral of multi_tau_correlator is
     
     COMPONENT uint32_to_single
         PORT (
+            aclk : IN STD_LOGIC;
             s_axis_a_tvalid : IN STD_LOGIC;
             s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             m_axis_result_tvalid : OUT STD_LOGIC;
@@ -57,6 +58,7 @@ architecture Behavioral of multi_tau_correlator is
     
     COMPONENT single_divider
         PORT (
+            aclk : IN STD_LOGIC;
             s_axis_a_tvalid : IN STD_LOGIC;
             s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             s_axis_b_tvalid : IN STD_LOGIC;
@@ -70,6 +72,7 @@ architecture Behavioral of multi_tau_correlator is
         Port ( Clk : in STD_LOGIC;
                Din : in STD_LOGIC_VECTOR (31 downto 0);
                DinRdy : in STD_LOGIC;
+               Reset : in STD_LOGIC;
                Dout : out STD_LOGIC_VECTOR (31 downto 0);
                DoutRdy : out STD_LOGIC);
     end component;
@@ -101,6 +104,7 @@ begin
     begin
         D : uint32_to_single
         port map (
+            aclk => Clk,
             s_axis_a_tvalid => Dout_Int_Rdy,
             s_axis_a_tdata => Dout_Int,
             m_axis_result_tvalid => Dout_Single_Rdy,
@@ -110,6 +114,7 @@ begin
         Nout_Int_padded <= (Nout_Int_padded'HIGH downto Nout_Int'HIGH + 1 => '0') & Nout_Int;
         N : uint32_to_single
         port map (
+            aclk => Clk,
             s_axis_a_tvalid => Dout_Int_Rdy,
             s_axis_a_tdata => Nout_Int_padded,
             m_axis_result_tvalid => Nout_Single_Rdy,
@@ -118,6 +123,7 @@ begin
         
         divider : single_divider
         port map (
+            aclk => Clk,
             s_axis_a_tvalid => Dout_Single_Rdy,
             s_axis_a_tdata => Dout_Single,
             s_axis_b_tvalid => Nout_Single_Rdy,
@@ -131,6 +137,7 @@ begin
             Clk => Clk,
             Din => Dout_unscaled,
             DinRdy => Dout_unscaled_Rdy,
+            Reset => Reset,
             Dout => Dout,
             DoutRdy => DoutRdy
         );
