@@ -3,23 +3,22 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="multi_tau_correlator_testbench_behav.wdb" id="1">
+      <db_ref path="multi_tau_correlator_testbench_func_synth.wdb" id="1">
          <top_modules>
-            <top_module name="glbl" />
             <top_module name="multi_tau_correlator_testbench" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="409279314fs"></ZoomStartTime>
-      <ZoomEndTime time="411173632fs"></ZoomEndTime>
-      <Cursor1Time time="410390fs"></Cursor1Time>
+      <ZoomStartTime time="410166666fs"></ZoomStartTime>
+      <ZoomEndTime time="410239067fs"></ZoomEndTime>
+      <Cursor1Time time="409861666fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="258"></NameColumnWidth>
+      <NameColumnWidth column_width="246"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="7" />
+   <WVObjectSize size="11" />
    <wvobject fp_name="/multi_tau_correlator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -51,5 +50,26 @@
    <wvobject fp_name="/multi_tau_correlator_testbench/DoutRdy" type="logic">
       <obj_property name="ElementShortName">DoutRdy</obj_property>
       <obj_property name="ObjectShortName">DoutRdy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multi_tau_correlator_testbench/to_test/Dout_Int" type="array">
+      <obj_property name="ElementShortName">Dout_Int[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Dout_Int[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multi_tau_correlator_testbench/to_test/Dout_Int_Rdy" type="logic">
+      <obj_property name="ElementShortName">Dout_Int_Rdy</obj_property>
+      <obj_property name="ObjectShortName">Dout_Int_Rdy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multi_tau_correlator_testbench/to_test/normalize/Dout_Single" type="array">
+      <obj_property name="ElementShortName">Dout_Single[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Dout_Single[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">FLOATINGPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">24</obj_property>
+      <obj_property name="radix_otherWidth">8</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multi_tau_correlator_testbench/to_test/normalize/Dout_Single_Rdy" type="logic">
+      <obj_property name="ElementShortName">Dout_Single_Rdy</obj_property>
+      <obj_property name="ObjectShortName">Dout_Single_Rdy</obj_property>
    </wvobject>
 </wave_config>

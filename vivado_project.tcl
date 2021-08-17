@@ -160,16 +160,16 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "23" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "23" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "24" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "24" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "23" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "26" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "26" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "26" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "23" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "26" -objects $obj
 set_property -name "webtalk.xcelium_export_sim" -value "3" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "24" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "414" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "440" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -347,6 +347,7 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 # Set 'correlator' fileset properties
 set obj [get_filesets correlator]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "nl.mode" -value "funcsim" -objects $obj
 set_property -name "top" -value "correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
@@ -470,6 +471,8 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 # Set 'multi_tau_correlator' fileset properties
 set obj [get_filesets multi_tau_correlator]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "nl.mode" -value "funcsim" -objects $obj
+set_property -name "sim_mode" -value "post-synthesis" -objects $obj
 set_property -name "top" -value "multi_tau_correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
@@ -521,8 +524,6 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
-set_property -name "incremental_checkpoint" -value "$proj_dir/vivado_project.srcs/utils_1/imports/synth_1/top.dcp" -objects $obj
-set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
 set_property -name "write_incremental_synth_checkpoint" -value "1" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
@@ -737,8 +738,6 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
-set_property -name "incremental_checkpoint" -value "$proj_dir/vivado_project.srcs/utils_1/imports/impl_1/top_routed.dcp" -objects $obj
-set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj

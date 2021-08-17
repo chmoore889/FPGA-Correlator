@@ -55,6 +55,8 @@ begin
     test_in : process
         variable isEnd : boolean := false;
     begin
+        wait for 110 ns;
+    
         Reset <= '1';
         wait for CLOCK_PERIOD;
         Reset <= '0';
