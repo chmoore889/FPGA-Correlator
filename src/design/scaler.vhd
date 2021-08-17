@@ -38,7 +38,7 @@ begin
     orig_exponent <= Din(30 downto 23);    
     new_exponent <= std_logic_vector(unsigned(orig_exponent) - (2 * num_to_divide));
     
-    process (clk, counter_reset) begin
+    process (clk) begin
         if rising_edge(clk) then
             if counter_reset = '1' then
                 first_8_done <= '0';
