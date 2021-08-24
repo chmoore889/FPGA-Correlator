@@ -40,7 +40,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
    "${origin_dir}/src/design/scaler.vhd" \
    "${origin_dir}/src/design/top.vhd" \
-   "${origin_dir}/src/constraints/Nexys-A7-100T-Master.xdc" \
+   "${origin_dir}/src/constraints/Arty-A7-100-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/correlator_testbench.vhd" \
@@ -149,7 +149,7 @@ set proj_dir [get_property directory [current_project]]
 
 # Set project properties
 set obj [current_project]
-set_property -name "board_part" -value "digilentinc.com:nexys-a7-100t:part0:1.0" -objects $obj
+set_property -name "board_part" -value "digilentinc.com:arty-a7-100:part0:1.0" -objects $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
@@ -160,15 +160,15 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "26" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "26" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "27" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "27" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "26" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "28" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "28" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "27" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "26" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "3" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "27" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "1" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "28" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "440" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_MEMORY" -objects $obj
 
@@ -280,9 +280,9 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/src/constraints/Nexys-A7-100T-Master.xdc"]"
+set file "[file normalize "$origin_dir/src/constraints/Arty-A7-100-Master.xdc"]"
 set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$origin_dir/src/constraints/Nexys-A7-100T-Master.xdc"
+set file "$origin_dir/src/constraints/Arty-A7-100-Master.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
