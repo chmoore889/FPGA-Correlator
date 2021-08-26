@@ -160,15 +160,15 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "29" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "29" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "30" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "30" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "29" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "32" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "32" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "33" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "33" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "32" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "29" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "32" -objects $obj
 set_property -name "webtalk.xcelium_export_sim" -value "1" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "30" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "33" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "440" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_MEMORY" -objects $obj
 

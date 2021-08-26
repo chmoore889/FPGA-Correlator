@@ -10,20 +10,19 @@ end top;
 
 architecture Behavioral of top is
     COMPONENT microblaze_controller
-      PORT (
-        Clk : IN STD_LOGIC;
-        Reset : IN STD_LOGIC;
-        UART_Interrupt : OUT STD_LOGIC;
-        GPI2_Interrupt : OUT STD_LOGIC;
-        INTC_IRQ : OUT STD_LOGIC;
-        UART_rxd : IN STD_LOGIC;
-        UART_txd : OUT STD_LOGIC;
-        GPIO1_tri_i : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        GPIO1_tri_o : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        GPIO2_tri_i : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-        GPIO2_tri_o : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
-        GPIO3_tri_o : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
-      );
+        PORT (
+            Clk : IN STD_LOGIC;
+            Reset : IN STD_LOGIC;
+            GPI2_Interrupt : OUT STD_LOGIC;
+            INTC_IRQ : OUT STD_LOGIC;
+            UART_rxd : IN STD_LOGIC;
+            UART_txd : OUT STD_LOGIC;
+            GPIO1_tri_i : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            GPIO1_tri_o : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            GPIO2_tri_i : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+            GPIO2_tri_o : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+            GPIO3_tri_o : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
+        );
     END COMPONENT;
     
     component multi_tau_correlator is
@@ -42,12 +41,15 @@ architecture Behavioral of top is
     
     signal Dout : STD_LOGIC_VECTOR (31 downto 0);
     signal DoutRdy : STD_LOGIC;
+    
+    signal invert_rst : STD_LOGIC;
 begin
-    microblaze : microblaze_controller
+    invert_rst <= NOT Rst;
+
+    mb : microblaze_controller
     PORT MAP (
         Clk => Clk,
-        Reset => Rst,
-        --UART_Interrupt => UART_Interrupt,
+        Reset => invert_rst,
         --GPI2_Interrupt => ,
         --INTC_IRQ => INTC_IRQ,
         UART_rxd => UART_rx,
@@ -62,7 +64,7 @@ begin
     correlator : multi_tau_correlator
     port map (
         Clk => Clk,
-        Reset => Rst,
+        Reset => invert_rst,
         Din => Din,
         NDin => NDin,
         EODin => EODin,
