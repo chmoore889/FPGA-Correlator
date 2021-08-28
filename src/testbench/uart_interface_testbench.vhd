@@ -64,11 +64,6 @@ begin
         UARTData <= X"00"; 
         wait for CLOCK_PERIOD;
         
-        UARTDataRdy <= '0';
-        wait for CLOCK_PERIOD;
-        
-        UARTDataRdy <= '1';
-        
         UARTData <= X"55"; 
         wait for CLOCK_PERIOD;
         
