@@ -15,7 +15,7 @@ architecture Behavioral of UART_interface is
     constant startCode : STD_LOGIC_VECTOR(7 downto 0) := X"FF";
     constant EODCode : STD_LOGIC_VECTOR(7 downto 0) := X"55";
 
-    type STATE is (idle, eod, data_1, data_2);
+    type STATE is (idle, eod, data_start, data_1, data_2);
     signal curr_state : STATE := idle; 
 begin
     process(Clk) begin
@@ -33,7 +33,11 @@ begin
                             end if;
                         end if;
                     when eod =>
-                        curr_state <= idle;                     
+                        curr_state <= idle;
+                    when data_start =>
+                        if UARTDinRdy = '1' then
+                            curr_state <= data_1;
+                        end if;
                     when data_1 =>
                         if UARTDinRdy = '1' then
                             curr_state <= data_2;
