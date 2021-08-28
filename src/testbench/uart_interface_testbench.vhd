@@ -48,17 +48,32 @@ begin
         UARTData <= X"FF"; 
         wait for CLOCK_PERIOD;
         
+        UARTDataRdy <= '0';
+        wait for CLOCK_PERIOD;
+        
+        UARTDataRdy <= '1';
+        
         UARTData <= X"01"; 
         wait for CLOCK_PERIOD;
         
+        UARTDataRdy <= '0';
+        wait for CLOCK_PERIOD;
+        
+        UARTDataRdy <= '1';
+        
         UARTData <= X"00"; 
         wait for CLOCK_PERIOD;
+        
+        UARTDataRdy <= '0';
+        wait for CLOCK_PERIOD;
+        
+        UARTDataRdy <= '1';
         
         UARTData <= X"55"; 
         wait for CLOCK_PERIOD;
         
         UARTDataRdy <= '0';
-        wait for 5*CLOCK_PERIOD;
+        wait for CLOCK_PERIOD;
         
         finish;
     end process;

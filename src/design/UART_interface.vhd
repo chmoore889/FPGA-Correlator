@@ -27,13 +27,17 @@ begin
                     when idle =>
                         if UARTDinRdy = '1' then
                             if UARTDin = startCode then
-                                curr_state <= data_1;
+                                curr_state <= data_start;
                             elsif UARTDin = EODCode then
                                 curr_state <= eod;
                             end if;
                         end if;
                     when eod =>
-                        curr_state <= idle;
+                        if UARTDin = startCode then
+                            curr_state <= data_start;
+                        else
+                            curr_state <= idle;
+                        end if;
                     when data_start =>
                         if UARTDinRdy = '1' then
                             curr_state <= data_1;
@@ -43,7 +47,11 @@ begin
                             curr_state <= data_2;
                         end if;
                     when data_2 =>
-                        curr_state <= idle;
+                        if UARTDin = EODCode then
+                            curr_state <= eod;
+                        else
+                            curr_state <= idle;
+                        end if;
                 end case;
             end if;
         end if;
@@ -54,8 +62,11 @@ begin
             when idle =>
                 CorrDataRdy <= '0';
                 CorrEOD <= '0';
-            when eod =>                
-                CorrEOD <= '1';                     
+            when eod =>
+                CorrDataRdy <= '0';
+                CorrEOD <= '1';
+            when data_start =>
+                CorrEOD <= '0';
             when data_1 =>                
                 CorrData(7 downto 0) <= UARTDin;
             when data_2 =>                
