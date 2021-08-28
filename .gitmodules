@@ -1,0 +1,3 @@
+[submodule "uart-for-fpga"]
+	path = uart-for-fpga
+	url = https://github.com/jakubcabal/uart-for-fpga
