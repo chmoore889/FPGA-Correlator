@@ -28,50 +28,46 @@ begin
                         if UARTDinRdy = '1' then
                             if UARTDin = startCode then
                                 curr_state <= data_start;
+                                CorrEOD <= '0';
                             elsif UARTDin = EODCode then
                                 curr_state <= eod;
+                                CorrDataRdy <= '0';
+                                CorrEOD <= '1';
                             end if;
                         end if;
                     when eod =>
                         if UARTDin = startCode then
                             curr_state <= data_start;
+                            CorrEOD <= '0';
                         else
                             curr_state <= idle;
+                            CorrDataRdy <= '0';
+                            CorrEOD <= '0';
                         end if;
                     when data_start =>
                         if UARTDinRdy = '1' then
                             curr_state <= data_1;
+                            CorrData(7 downto 0) <= UARTDin;
                         end if;
                     when data_1 =>
                         if UARTDinRdy = '1' then
                             curr_state <= data_2;
+                            CorrData(15 downto 8) <= UARTDin;
+                            CorrDataRdy <= '1';
                         end if;
                     when data_2 =>
                         if UARTDin = EODCode then
                             curr_state <= eod;
+                            CorrDataRdy <= '0';
+                            CorrEOD <= '1';
                         else
                             curr_state <= idle;
+                            CorrDataRdy <= '0';
+                            CorrEOD <= '0';
                         end if;
                 end case;
             end if;
         end if;
     end process;
-    
-    process(curr_state) begin
-        case curr_state is
-            when idle =>
-                CorrDataRdy <= '0';
-                CorrEOD <= '0';
-            when eod =>
-                CorrDataRdy <= '0';
-                CorrEOD <= '1';
-            when data_start =>
-                CorrEOD <= '0';
-            when data_1 =>                
-                CorrData(7 downto 0) <= UARTDin;
-            when data_2 =>                
-                CorrData(15 downto 8) <= UARTDin;
-                CorrDataRdy <= '1';
-        end case;
-    end process;
+
 end Behavioral;
