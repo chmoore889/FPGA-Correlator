@@ -60,6 +60,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/divided_correlator_behav.wcfg" \
    "${origin_dir}/src/testbench/multi_tau_correlator_testbench.vhd" \
    "${origin_dir}/src/testbench/multi_tau_correlator_testbench_behav.wcfg" \
+   "${origin_dir}/src/testbench/uart_interface_testbench.vhd" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -174,9 +175,8 @@ set_property -name "webtalk.questa_export_sim" -value "40" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "39" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "39" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "40" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "440" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "487" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -524,6 +524,36 @@ set_property -name "nl.mode" -value "funcsim" -objects $obj
 set_property -name "sim_mode" -value "post-synthesis" -objects $obj
 set_property -name "top" -value "multi_tau_correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'uart' fileset (if not found)
+if {[string equal [get_filesets -quiet uart] ""]} {
+  create_fileset -simset uart
+}
+
+# Set 'uart' fileset object
+set obj [get_filesets uart]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/uart_interface_testbench.vhd"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'uart' fileset file properties for remote files
+set file "$origin_dir/src/testbench/uart_interface_testbench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets uart] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'uart' fileset file properties for local files
+# None
+
+# Set 'uart' fileset properties
+set obj [get_filesets uart]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "uart_interface_testbench" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
 # Set 'utils_1' fileset object

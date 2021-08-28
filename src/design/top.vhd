@@ -72,7 +72,8 @@ architecture Behavioral of top is
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
     signal NDinCorr, EODinCorr : STD_LOGIC;
     
-    signal DoutCorr, DoutFIFO : STD_LOGIC_VECTOR (31 downto 0);
+    signal DoutCorr : STD_LOGIC_VECTOR (31 downto 0);
+    signal DoutFIFO : STD_LOGIC_VECTOR (7 downto 0);
     signal DoutRdyCorr, DoutRdyFIFO, UARTDinRdy : STD_LOGIC;
     
     signal UARTDout : STD_LOGIC_VECTOR (7 downto 0);

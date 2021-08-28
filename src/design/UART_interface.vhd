@@ -18,38 +18,45 @@ architecture Behavioral of UART_interface is
     type STATE is (idle, eod, data_1, data_2);
     signal curr_state : STATE := idle; 
 begin
-    CorrData <= (others => '0');
-
     process(Clk) begin
         if rising_edge(Clk) then
             if Rst = '1' then
                 curr_state <= idle;
-            elsif UARTDinRdy = '1' then
+            else
                 case curr_state is
                     when idle =>
-                        if UARTDin = startCode then
-                            curr_state <= data_1;
-                        elsif UARTDin = EODCode then
-                            curr_state <= eod;
+                        if UARTDinRdy = '1' then
+                            if UARTDin = startCode then
+                                curr_state <= data_1;
+                            elsif UARTDin = EODCode then
+                                curr_state <= eod;
+                            end if;
                         end if;
-                        
-                        CorrDataRdy <= '0';
-                        CorrEOD <= '0';
                     when eod =>
-                        curr_state <= idle;
-                        
-                        CorrEOD <= '1';                        
+                        curr_state <= idle;                     
                     when data_1 =>
-                        curr_state <= data_2;
-                        
-                        CorrData(7 downto 0) <= UARTDin;
+                        if UARTDinRdy = '1' then
+                            curr_state <= data_2;
+                        end if;
                     when data_2 =>
                         curr_state <= idle;
-                        
-                        CorrData(15 downto 8) <= UARTDin;
-                        CorrDataRdy <= '1';
                 end case;
             end if;
         end if;
+    end process;
+    
+    process(curr_state) begin
+        case curr_state is
+            when idle =>
+                CorrDataRdy <= '0';
+                CorrEOD <= '0';
+            when eod =>                
+                CorrEOD <= '1';                     
+            when data_1 =>                
+                CorrData(7 downto 0) <= UARTDin;
+            when data_2 =>                
+                CorrData(15 downto 8) <= UARTDin;
+                CorrDataRdy <= '1';
+        end case;
     end process;
 end Behavioral;
