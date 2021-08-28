@@ -21,6 +21,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
    "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
    "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci" \
+   "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci" \
    "${origin_dir}/src/design/UART_interface.vhd" \
    "${origin_dir}/src/design/combiner.vhd" \
    "${origin_dir}/src/design/correlator.vhd" \
@@ -158,14 +159,15 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "39" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "39" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "40" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "40" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "39" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "41" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "41" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "42" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "42" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "41" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "39" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "40" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "41" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "42" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "506" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
@@ -180,6 +182,7 @@ set files [list \
  [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
  [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
  [file normalize "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci"] \
  [file normalize "${origin_dir}/src/design/UART_interface.vhd"] \
  [file normalize "${origin_dir}/src/design/combiner.vhd"] \
  [file normalize "${origin_dir}/src/design/correlator.vhd"] \
@@ -218,6 +221,15 @@ if { ![get_property "is_locked" $file_obj] } {
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 
 set file "$origin_dir/src/design/ip/corr_out_fifo/corr_out_fifo.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+
+set file "$origin_dir/src/design/ip/ila_debug/ila_debug.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
