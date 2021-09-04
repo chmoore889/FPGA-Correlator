@@ -107,7 +107,7 @@ begin
     UART_COM : UART
     GENERIC MAP (
         CLK_FREQ => 100e6,
-        BAUD_RATE => 115200,
+        BAUD_RATE => 921600,
         PARITY_BIT => "none",
         USE_DEBOUNCER => FALSE
     )
