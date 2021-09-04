@@ -18,10 +18,6 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
-   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
-   "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci" \
-   "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci" \
    "${origin_dir}/src/design/UART_interface.vhd" \
    "${origin_dir}/src/design/combiner.vhd" \
    "${origin_dir}/src/design/correlator.vhd" \
@@ -37,6 +33,11 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/uart-for-fpga/rtl/comp/uart_tx.vhd" \
    "${origin_dir}/uart-for-fpga/rtl/uart.vhd" \
    "${origin_dir}/src/design/top.vhd" \
+   "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci" \
+   "${origin_dir}/src/design/ip/data_storage_fifo/data_storage_fifo.xci" \
+   "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci" \
+   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
+   "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
    "${origin_dir}/src/constraints/Arty-A7-100-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
@@ -159,16 +160,15 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "41" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "41" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "42" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "42" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "41" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "52" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "52" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "53" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "53" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "52" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "41" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "42" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "514" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "52" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "53" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "599" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -179,10 +179,6 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
- [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
- [file normalize "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci"] \
- [file normalize "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci"] \
  [file normalize "${origin_dir}/src/design/UART_interface.vhd"] \
  [file normalize "${origin_dir}/src/design/combiner.vhd"] \
  [file normalize "${origin_dir}/src/design/correlator.vhd"] \
@@ -202,42 +198,6 @@ set files [list \
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
-set file "$origin_dir/src/design/ip/uint32_to_single/uint32_to_single.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
-set file "$origin_dir/src/design/ip/corr_out_fifo/corr_out_fifo.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
-set file "$origin_dir/src/design/ip/ila_debug/ila_debug.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "generate_synth_checkpoint" -value "0" -objects $file_obj
-}
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
 set file "$origin_dir/src/design/UART_interface.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -321,6 +281,111 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 set obj [get_filesets sources_1]
 set_property -name "top" -value "top" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/ila_debug/ila_debug.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/ila_debug/ila_debug.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/data_storage_fifo/data_storage_fifo.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/data_storage_fifo/data_storage_fifo.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/corr_out_fifo/corr_out_fifo.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/uint32_to_single/uint32_to_single.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -523,7 +588,6 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 set obj [get_filesets multi_tau_correlator]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
 set_property -name "nl.mode" -value "funcsim" -objects $obj
-set_property -name "sim_mode" -value "post-synthesis" -objects $obj
 set_property -name "top" -value "multi_tau_correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
@@ -554,6 +618,7 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 # Set 'uart' fileset properties
 set obj [get_filesets uart]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "incremental" -value "0" -objects $obj
 set_property -name "top" -value "uart_interface_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
@@ -799,6 +864,7 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
+set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
