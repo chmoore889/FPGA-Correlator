@@ -9,17 +9,6 @@ entity top is
 end top;
 
 architecture Behavioral of top is
-    COMPONENT ila_debug
-        PORT (
-            clk : IN STD_LOGIC;
-            probe0 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-            probe1 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-            probe2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            probe3 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-            probe4 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
-        );
-    END COMPONENT ila_debug;
-
     component UART
         Generic (
             CLK_FREQ      : integer := 50e6;   -- system clock frequency in Hz
@@ -93,16 +82,6 @@ architecture Behavioral of top is
     signal invert_rst : STD_LOGIC;
 begin
     invert_rst <= NOT Rst;
-    
-    debug : ila_debug
-    PORT MAP (
-        clk => Clk,
-        probe0(0) => NDinCorr, 
-        probe1(0) => EODinCorr, 
-        probe2 => DinCorr,
-        probe3 => UARTDout,
-        probe4(0) => UARTDoutRdy
-    );
 
     UART_COM : UART
     GENERIC MAP (

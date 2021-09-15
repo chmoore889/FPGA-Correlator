@@ -5,11 +5,11 @@
 
 
 ## Set bitstream SPI bus width to maximum of 4
-set_property BITSTREAM.Config.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 
 ## Clock signal
-set_property -dict { PACKAGE_PIN E3    IOSTANDARD LVCMOS33 } [get_ports { Clk }]; #IO_L12P_T1_MRCC_35 Sch=gclk[100]
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports { Clk }];
+set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports Clk]
+create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports Clk]
 
 ## Switches
 #set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { sw[0] }]; #IO_L12N_T1_MRCC_16 Sch=sw[0]
@@ -84,8 +84,8 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports { C
 #set_property -dict { PACKAGE_PIN G2    IOSTANDARD LVCMOS33 } [get_ports { jd[7] }]; #IO_L15N_T2_DQS_35 Sch=jd[10]
 
 ## USB-UART Interface
-set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports { UART_tx }]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
-set_property -dict { PACKAGE_PIN A9    IOSTANDARD LVCMOS33 } [get_ports { UART_rx }]; #IO_L14N_T2_SRCC_16 Sch=uart_txd_in
+set_property -dict {PACKAGE_PIN D10 IOSTANDARD LVCMOS33} [get_ports UART_tx]
+set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports UART_rx]
 
 ## ChipKit Outer Digital Header
 #set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports { ck_io0  }]; #IO_L16P_T2_CSI_B_14 Sch=ck_io[0]
@@ -179,7 +179,7 @@ set_property -dict { PACKAGE_PIN A9    IOSTANDARD LVCMOS33 } [get_ports { UART_r
 
 ## Misc. ChipKit Ports
 #set_property -dict { PACKAGE_PIN M17   IOSTANDARD LVCMOS33 } [get_ports { ck_ioa }]; #IO_L10N_T1_D15_14 Sch=ck_ioa
-set_property -dict { PACKAGE_PIN C2    IOSTANDARD LVCMOS33 } [get_ports { Rst }]; #IO_L16P_T2_35 Sch=ck_rst
+set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports Rst]
 
 ## SMSC Ethernet PHY
 #set_property -dict { PACKAGE_PIN D17   IOSTANDARD LVCMOS33 } [get_ports { eth_col }]; #IO_L16N_T2_A27_15 Sch=eth_col
@@ -209,7 +209,7 @@ set_property -dict { PACKAGE_PIN C2    IOSTANDARD LVCMOS33 } [get_ports { Rst }]
 #set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS33 } [get_ports { qspi_dq[2] }]; #IO_L2P_T0_D02_14 Sch=qspi_dq[2]
 #set_property -dict { PACKAGE_PIN M14   IOSTANDARD LVCMOS33 } [get_ports { qspi_dq[3] }]; #IO_L2N_T0_D03_14 Sch=qspi_dq[3]
 
-## Power Measurements 
+## Power Measurements
 #set_property -dict { PACKAGE_PIN B17   IOSTANDARD LVCMOS33     } [get_ports { vsnsvu_n }]; #IO_L7N_T1_AD2N_15 Sch=ad_n[2]
 #set_property -dict { PACKAGE_PIN B16   IOSTANDARD LVCMOS33     } [get_ports { vsnsvu_p }]; #IO_L7P_T1_AD2P_15 Sch=ad_p[2]
 #set_property -dict { PACKAGE_PIN B12   IOSTANDARD LVCMOS33     } [get_ports { vsns5v0_n }]; #IO_L3N_T0_DQS_AD1N_15 Sch=ad_n[1]
@@ -218,3 +218,84 @@ set_property -dict { PACKAGE_PIN C2    IOSTANDARD LVCMOS33 } [get_ports { Rst }]
 #set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVCMOS33     } [get_ports { isns5v0_p }]; #IO_L5P_T0_AD9P_15 Sch=ad_p[9]
 #set_property -dict { PACKAGE_PIN A16   IOSTANDARD LVCMOS33     } [get_ports { isns0v95_n }]; #IO_L8N_T1_AD10N_15 Sch=ad_n[10]
 #set_property -dict { PACKAGE_PIN A15   IOSTANDARD LVCMOS33     } [get_ports { isns0v95_p }]; #IO_L8P_T1_AD10P_15 Sch=ad_p[10]
+
+
+
+create_debug_core u_ila_0 ila
+set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
+set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
+set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
+set_property C_DATA_DEPTH 16384 [get_debug_cores u_ila_0]
+set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
+set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
+set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
+set_property port_width 1 [get_debug_ports u_ila_0/clk]
+connect_debug_port u_ila_0/clk [get_nets [list Clk_IBUF_BUFG]]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
+set_property port_width 32 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {correlator/Dout_Int[0]} {correlator/Dout_Int[1]} {correlator/Dout_Int[2]} {correlator/Dout_Int[3]} {correlator/Dout_Int[4]} {correlator/Dout_Int[5]} {correlator/Dout_Int[6]} {correlator/Dout_Int[7]} {correlator/Dout_Int[8]} {correlator/Dout_Int[9]} {correlator/Dout_Int[10]} {correlator/Dout_Int[11]} {correlator/Dout_Int[12]} {correlator/Dout_Int[13]} {correlator/Dout_Int[14]} {correlator/Dout_Int[15]} {correlator/Dout_Int[16]} {correlator/Dout_Int[17]} {correlator/Dout_Int[18]} {correlator/Dout_Int[19]} {correlator/Dout_Int[20]} {correlator/Dout_Int[21]} {correlator/Dout_Int[22]} {correlator/Dout_Int[23]} {correlator/Dout_Int[24]} {correlator/Dout_Int[25]} {correlator/Dout_Int[26]} {correlator/Dout_Int[27]} {correlator/Dout_Int[28]} {correlator/Dout_Int[29]} {correlator/Dout_Int[30]} {correlator/Dout_Int[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+set_property port_width 32 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {correlator/Dout_reg[31][0]} {correlator/Dout_reg[31][1]} {correlator/Dout_reg[31][2]} {correlator/Dout_reg[31][3]} {correlator/Dout_reg[31][4]} {correlator/Dout_reg[31][5]} {correlator/Dout_reg[31][6]} {correlator/Dout_reg[31][7]} {correlator/Dout_reg[31][8]} {correlator/Dout_reg[31][9]} {correlator/Dout_reg[31][10]} {correlator/Dout_reg[31][11]} {correlator/Dout_reg[31][12]} {correlator/Dout_reg[31][13]} {correlator/Dout_reg[31][14]} {correlator/Dout_reg[31][15]} {correlator/Dout_reg[31][16]} {correlator/Dout_reg[31][17]} {correlator/Dout_reg[31][18]} {correlator/Dout_reg[31][19]} {correlator/Dout_reg[31][20]} {correlator/Dout_reg[31][21]} {correlator/Dout_reg[31][22]} {correlator/Dout_reg[31][23]} {correlator/Dout_reg[31][24]} {correlator/Dout_reg[31][25]} {correlator/Dout_reg[31][26]} {correlator/Dout_reg[31][27]} {correlator/Dout_reg[31][28]} {correlator/Dout_reg[31][29]} {correlator/Dout_reg[31][30]} {correlator/Dout_reg[31][31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+set_property port_width 8 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {DoutFIFO[0]} {DoutFIFO[1]} {DoutFIFO[2]} {DoutFIFO[3]} {DoutFIFO[4]} {DoutFIFO[5]} {DoutFIFO[6]} {DoutFIFO[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+set_property port_width 8 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {UARTDout[0]} {UARTDout[1]} {UARTDout[2]} {UARTDout[3]} {UARTDout[4]} {UARTDout[5]} {UARTDout[6]} {UARTDout[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
+set_property port_width 16 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {correlator/Nout_Int[0]} {correlator/Nout_Int[1]} {correlator/Nout_Int[2]} {correlator/Nout_Int[3]} {correlator/Nout_Int[4]} {correlator/Nout_Int[5]} {correlator/Nout_Int[6]} {correlator/Nout_Int[7]} {correlator/Nout_Int[8]} {correlator/Nout_Int[9]} {correlator/Nout_Int[10]} {correlator/Nout_Int[11]} {correlator/Nout_Int[12]} {correlator/Nout_Int[13]} {correlator/Nout_Int[14]} {correlator/Nout_Int[15]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
+set_property port_width 32 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list {din[0]} {din[1]} {din[2]} {din[3]} {din[4]} {din[5]} {din[6]} {din[7]} {din[8]} {din[9]} {din[10]} {din[11]} {din[12]} {din[13]} {din[14]} {din[15]} {din[16]} {din[17]} {din[18]} {din[19]} {din[20]} {din[21]} {din[22]} {din[23]} {din[24]} {din[25]} {din[26]} {din[27]} {din[28]} {din[29]} {din[30]} {din[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
+set_property port_width 32 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {correlator/Dout_unscaled[0]} {correlator/Dout_unscaled[1]} {correlator/Dout_unscaled[2]} {correlator/Dout_unscaled[3]} {correlator/Dout_unscaled[4]} {correlator/Dout_unscaled[5]} {correlator/Dout_unscaled[6]} {correlator/Dout_unscaled[7]} {correlator/Dout_unscaled[8]} {correlator/Dout_unscaled[9]} {correlator/Dout_unscaled[10]} {correlator/Dout_unscaled[11]} {correlator/Dout_unscaled[12]} {correlator/Dout_unscaled[13]} {correlator/Dout_unscaled[14]} {correlator/Dout_unscaled[15]} {correlator/Dout_unscaled[16]} {correlator/Dout_unscaled[17]} {correlator/Dout_unscaled[18]} {correlator/Dout_unscaled[19]} {correlator/Dout_unscaled[20]} {correlator/Dout_unscaled[21]} {correlator/Dout_unscaled[22]} {correlator/Dout_unscaled[23]} {correlator/Dout_unscaled[24]} {correlator/Dout_unscaled[25]} {correlator/Dout_unscaled[26]} {correlator/Dout_unscaled[27]} {correlator/Dout_unscaled[28]} {correlator/Dout_unscaled[29]} {correlator/Dout_unscaled[30]} {correlator/Dout_unscaled[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
+set_property port_width 16 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list {DinCorr[0]} {DinCorr[1]} {DinCorr[2]} {DinCorr[3]} {DinCorr[4]} {DinCorr[5]} {DinCorr[6]} {DinCorr[7]} {DinCorr[8]} {DinCorr[9]} {DinCorr[10]} {DinCorr[11]} {DinCorr[12]} {DinCorr[13]} {DinCorr[14]} {DinCorr[15]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list correlator/Dout_Int_Rdy]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
+set_property port_width 1 [get_debug_ports u_ila_0/probe9]
+connect_debug_port u_ila_0/probe9 [get_nets [list correlator/Dout_unscaled_Rdy]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
+set_property port_width 1 [get_debug_ports u_ila_0/probe10]
+connect_debug_port u_ila_0/probe10 [get_nets [list DoutRdyFIFO]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe11]
+set_property port_width 1 [get_debug_ports u_ila_0/probe11]
+connect_debug_port u_ila_0/probe11 [get_nets [list EODinCorr]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe12]
+set_property port_width 1 [get_debug_ports u_ila_0/probe12]
+connect_debug_port u_ila_0/probe12 [get_nets [list NDinCorr]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
+set_property port_width 1 [get_debug_ports u_ila_0/probe13]
+connect_debug_port u_ila_0/probe13 [get_nets [list UARTDoutRdy]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe14]
+set_property port_width 1 [get_debug_ports u_ila_0/probe14]
+connect_debug_port u_ila_0/probe14 [get_nets [list wr_en]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe15]
+set_property port_width 1 [get_debug_ports u_ila_0/probe15]
+connect_debug_port u_ila_0/probe15 [get_nets [list correlator/wr_en]]
+set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
+set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
+set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
+connect_debug_port dbg_hub/clk [get_nets Clk_IBUF_BUFG]
