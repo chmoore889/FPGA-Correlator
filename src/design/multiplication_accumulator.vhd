@@ -8,14 +8,14 @@ entity multiplication_accumulator is
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (31 downto 0);
+           Din : in STD_LOGIC_VECTOR (46 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
            Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DoutRdy : out STD_LOGIC := '0');
 end multiplication_accumulator;
@@ -23,8 +23,8 @@ end multiplication_accumulator;
 architecture Behavioral of multiplication_accumulator is
     signal EODDelay : STD_LOGIC := '0';
     
-    signal multiplier_out : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
-    signal counter_out : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal multiplier_out : STD_LOGIC_VECTOR (Dout'RANGE) := (others => '0');
+    signal counter_out : STD_LOGIC_VECTOR (Nout'RANGE) := (others => '0');
 begin
     Aout <= Ain;
     EODout <= EODin;
@@ -39,7 +39,7 @@ begin
                    clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
                    M1_select : in STD_LOGIC;
-                   output : out STD_LOGIC_VECTOR (31 downto 0));
+                   output : out STD_LOGIC_VECTOR (46 downto 0));
         end component;
         
         signal dsp_reset : STD_LOGIC;

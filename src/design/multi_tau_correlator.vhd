@@ -23,14 +23,14 @@ architecture Behavioral of multi_tau_correlator is
                NDin : in STD_LOGIC;
                EODin : in STD_LOGIC;
                Reset : in STD_LOGIC;
-               Din : in STD_LOGIC_VECTOR (31 downto 0);
+               Din : in STD_LOGIC_VECTOR (46 downto 0);
                Nin : in STD_LOGIC_VECTOR (15 downto 0);
                DinRdy : in STD_LOGIC;
                Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                BRdy : out STD_LOGIC := '0';
                EODout : out STD_LOGIC;
-               Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+               Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
                Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                DoutRdy : out STD_LOGIC := '0');
     end component;
@@ -46,11 +46,21 @@ architecture Behavioral of multi_tau_correlator is
                EODout : out STD_LOGIC);
     end component;
     
-    COMPONENT uint32_to_single
+    COMPONENT int48_to_single
         PORT (
             aclk : IN STD_LOGIC;
             s_axis_a_tvalid : IN STD_LOGIC;
-            s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            s_axis_a_tdata : IN STD_LOGIC_VECTOR(47 DOWNTO 0);
+            m_axis_result_tvalid : OUT STD_LOGIC;
+            m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        );
+    END COMPONENT;
+    
+    COMPONENT int17_to_single
+        PORT (
+            aclk : IN STD_LOGIC;
+            s_axis_a_tvalid : IN STD_LOGIC;
+            s_axis_a_tdata : IN STD_LOGIC_VECTOR(23 DOWNTO 0);
             m_axis_result_tvalid : OUT STD_LOGIC;
             m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
@@ -77,7 +87,7 @@ architecture Behavioral of multi_tau_correlator is
                DoutRdy : out STD_LOGIC);
     end component;
     
-    type Arr32 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (31 downto 0);
+    type DArr is ARRAY (integer range <>) of STD_LOGIC_VECTOR (46 downto 0);
     type Arr16 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (15 downto 0);
     
     constant num_combiners : integer := 8;
@@ -86,37 +96,36 @@ architecture Behavioral of multi_tau_correlator is
     --(I) refers to connections to the next module.
     --(I-1) is the previous.
     signal A_cascade, B_cascade, N_cascade : Arr16 (num_combiners downto 0) := (others => (others => '0'));
-    signal D_cascade : Arr32 (num_combiners downto 0) := (others => (others => '0'));
+    signal D_cascade : DArr (num_combiners downto 0) := (others => (others => '0'));
     signal DRdy_cascade, BRdy_cascade, EOD_cascade : STD_LOGIC_VECTOR (num_combiners downto 0) := (others => '0');
     
-    signal Dout_Int : STD_LOGIC_VECTOR (31 downto 0);
+    signal Dout_Int : STD_LOGIC_VECTOR (46 downto 0);
     signal Nout_Int : STD_LOGIC_VECTOR (15 downto 0);
     signal Dout_Int_Rdy : STD_LOGIC;
 begin
     normalize : block
-        signal Nout_Int_padded : STD_LOGIC_VECTOR (31 downto 0);
-        
         signal Dout_Single, Nout_Single : STD_LOGIC_VECTOR (31 downto 0);
         signal Dout_Single_Rdy, Nout_Single_Rdy : STD_LOGIC;
         
         signal Dout_unscaled : STD_LOGIC_VECTOR (31 downto 0);
         signal Dout_unscaled_Rdy : STD_LOGIC;
     begin
-        D : uint32_to_single
+        D : int48_to_single
         port map (
             aclk => Clk,
             s_axis_a_tvalid => Dout_Int_Rdy,
-            s_axis_a_tdata => Dout_Int,
+            s_axis_a_tdata(47 downto Dout_Int'HIGH + 1) => (others => '0'),
+            s_axis_a_tdata(Dout_Int'RANGE) => Dout_Int,
             m_axis_result_tvalid => Dout_Single_Rdy,
             m_axis_result_tdata => Dout_Single
         );
         
-        Nout_Int_padded <= (Nout_Int_padded'HIGH downto Nout_Int'HIGH + 1 => '0') & Nout_Int;
-        N : uint32_to_single
+        N : int17_to_single
         port map (
             aclk => Clk,
             s_axis_a_tvalid => Dout_Int_Rdy,
-            s_axis_a_tdata => Nout_Int_padded,
+            s_axis_a_tdata(23 downto Nout_Int'HIGH + 1) => (others => '0'),
+            s_axis_a_tdata(Nout_Int'RANGE) => Nout_Int,
             m_axis_result_tvalid => Nout_Single_Rdy,
             m_axis_result_tdata => Nout_Single
         );

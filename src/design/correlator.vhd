@@ -12,14 +12,14 @@ entity correlator is
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (31 downto 0);
+           Din : in STD_LOGIC_VECTOR (46 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
            Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DoutRdy : out STD_LOGIC := '0');
 end correlator;
@@ -32,28 +32,28 @@ architecture Behavioral of correlator is
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (31 downto 0);
+           Din : in STD_LOGIC_VECTOR (46 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+           Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
            Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DoutRdy : out STD_LOGIC := '0');
     end component;
     
     signal EODinDelayed : STD_LOGIC;
     
-    type Arr32 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (31 downto 0);
+    type DArr is ARRAY (integer range <>) of STD_LOGIC_VECTOR (Dout'RANGE);
     type Arr16 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (15 downto 0);
     
     --Connections between each multiplication accumulator.
     --(I) refers to connections to the next module.
     --(I-1) is the previous.
     signal A_cascade, B_cascade, N_cascade : Arr16 (numDelays-1 downto 0) := (others => (others => '0'));
-    signal D_cascade : Arr32 (numDelays-1 downto 0) := (others => (others => '0'));
+    signal D_cascade : DArr (numDelays-1 downto 0) := (others => (others => '0'));
     signal DRdy_cascade, BRdy_cascade, EOD_cascade : STD_LOGIC_VECTOR (numDelays-1 downto 0) := (others => '0');
 begin
     --Cascade connections of last module to the outside of this entity

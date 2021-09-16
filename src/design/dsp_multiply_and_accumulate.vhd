@@ -10,11 +10,11 @@ entity dsp_multiply_and_accumulate is
            clk : in STD_LOGIC;
            reset : in STD_LOGIC;
            M1_select : in STD_LOGIC;
-           output : out STD_LOGIC_VECTOR (31 downto 0));
+           output : out STD_LOGIC_VECTOR (46 downto 0));
 end dsp_multiply_and_accumulate;
 
 architecture Behavioral of dsp_multiply_and_accumulate is
-    signal accum : STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+    signal accum : STD_LOGIC_VECTOR (output'RANGE) := (others => '0');
     signal sum : STD_LOGIC_VECTOR (47 downto 0) := (others => '0');
     signal inmode : STD_LOGIC_VECTOR (4 downto 0) := (others => '0');
     
@@ -29,7 +29,7 @@ begin
             if reset = '1' then
                 accum <= (others => '0');
             else
-                accum <= sum(31 downto 0);
+                accum <= sum(accum'RANGE);
             end if;
         end if;
     end process accum_reg;
