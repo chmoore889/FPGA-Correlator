@@ -45,8 +45,9 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/top.vhd" \
    "${origin_dir}/src/design/ip/data_storage_fifo/data_storage_fifo.xci" \
    "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci" \
-   "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci" \
    "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
+   "${origin_dir}/src/design/ip/int48_to_single/int48_to_single.xci" \
+   "${origin_dir}/src/design/ip/int17_to_single/int17_to_single.xci" \
    "${origin_dir}/src/constraints/Arty-A7-100-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench_behav.wcfg" \
@@ -169,15 +170,15 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "52" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "52" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "53" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "53" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "52" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "59" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "59" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "60" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "60" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "59" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "52" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "53" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "599" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "59" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "60" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "609" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -336,12 +337,12 @@ if { ![get_property "is_locked" $file_obj] } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/src/design/ip/uint32_to_single/uint32_to_single.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/src/design/ip/uint32_to_single/uint32_to_single.xci"
+set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
@@ -357,12 +358,33 @@ if { ![get_property "is_locked" $file_obj] } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
+ [file normalize "${origin_dir}/src/design/ip/int48_to_single/int48_to_single.xci"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
+set file "$origin_dir/src/design/ip/int48_to_single/int48_to_single.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/design/ip/int17_to_single/int17_to_single.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/design/ip/int17_to_single/int17_to_single.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
