@@ -18,16 +18,6 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "C:/Users/Christopher/Desktop/DCS/fpga/vivado_project/vivado_project.srcs/utils_1/imports/impl_1/top_routed.dcp" \
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find local file $ifile "
-      set status false
-    }
-  }
-
-  set files [list \
    "${origin_dir}/src/design/UART_interface.vhd" \
    "${origin_dir}/src/design/combiner.vhd" \
    "${origin_dir}/src/design/correlator.vhd" \
@@ -63,6 +53,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/multi_tau_correlator_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/uart_interface_testbench.vhd" \
    "${origin_dir}/src/testbench/uart_interface_testbench_behav.wcfg" \
+   "${origin_dir}/utils/top_routed.dcp" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -639,20 +630,20 @@ set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
-# Add local files from the original project (-no_copy_sources specified)
 set files [list \
- [file normalize "${origin_dir}/vivado_project/vivado_project.srcs/utils_1/imports/impl_1/top_routed.dcp" ]\
+ [file normalize "${origin_dir}/utils/top_routed.dcp"] \
 ]
-set added_files [add_files -fileset utils_1 $files]
+add_files -norecurse -fileset $obj $files
 
 # Set 'utils_1' fileset file properties for remote files
-# None
-
-# Set 'utils_1' fileset file properties for local files
-set file "impl_1/top_routed.dcp"
+set file "$origin_dir/utils/top_routed.dcp"
+set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
 set_property -name "netlist_only" -value "0" -objects $file_obj
 
+
+# Set 'utils_1' fileset file properties for local files
+# None
 
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
@@ -784,6 +775,15 @@ set_property -name "is_enabled" -value "0" -objects $obj
 set_property -name "options.max_paths" -value "10" -objects $obj
 
 }
+# Create 'impl_1_place_report_incremental_reuse_2' report (if not found)
+if { [ string equal [get_report_configs -of_objects [get_runs impl_1] impl_1_place_report_incremental_reuse_2] "" ] } {
+  create_report_config -report_name impl_1_place_report_incremental_reuse_2 -report_type report_incremental_reuse:1.0 -steps place_design -runs impl_1
+}
+set obj [get_report_configs -of_objects [get_runs impl_1] impl_1_place_report_incremental_reuse_2]
+if { $obj != "" } {
+set_property -name "display_name" -value "Incremental Reuse 1 - Place Design" -objects $obj
+
+}
 # Create 'impl_1_post_place_power_opt_report_timing_summary_0' report (if not found)
 if { [ string equal [get_report_configs -of_objects [get_runs impl_1] impl_1_post_place_power_opt_report_timing_summary_0] "" ] } {
   create_report_config -report_name impl_1_post_place_power_opt_report_timing_summary_0 -report_type report_timing_summary:1.0 -steps post_place_power_opt_design -runs impl_1
@@ -890,8 +890,9 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
-set_property -name "incremental_checkpoint" -value "$proj_dir/vivado_project.srcs/utils_1/imports/impl_1/top_routed.dcp" -objects $obj
+set_property -name "incremental_checkpoint" -value "C:/Users/Christopher/Desktop/DCS/fpga/utils/top_routed.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
+set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/Christopher/Desktop/DCS/fpga/utils" -objects $obj
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
