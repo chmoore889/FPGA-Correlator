@@ -9,6 +9,8 @@ entity top is
 end top;
 
 architecture Behavioral of top is
+    constant accumRegSize : integer := 47;
+
     component UART
         Generic (
             CLK_FREQ      : integer := 50e6;   -- system clock frequency in Hz
@@ -60,6 +62,9 @@ architecture Behavioral of top is
     END COMPONENT;
     
     component multi_tau_correlator is
+        Generic (
+            accumRegSize : integer := 47
+        );
         Port ( Clk : in STD_LOGIC;
                Din : in STD_LOGIC_VECTOR (15 downto 0);
                NDin : in STD_LOGIC;
@@ -129,6 +134,9 @@ begin
     );
     
     correlator : multi_tau_correlator
+    generic map (
+        accumRegSize => accumRegSize
+    )
     port map (
         Clk => Clk,
         Reset => invert_rst,

@@ -4,7 +4,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity correlator is
     Generic (
         numDelays : integer := 8;
-        additionalLatency : integer := 0
+        additionalLatency : integer := 0;
+        accumRegSize : integer := 47 --Bit width of registers used for accumulation. Max value of 47.
     );
     Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -12,34 +13,37 @@ entity correlator is
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (46 downto 0);
+           Din : in STD_LOGIC_VECTOR (accumRegSize - 1 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
+           Dout : out STD_LOGIC_VECTOR (accumRegSize - 1 downto 0) := (others => '0');
            Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DoutRdy : out STD_LOGIC := '0');
 end correlator;
 
 architecture Behavioral of correlator is
     component multiplication_accumulator is
+        Generic (
+            accumRegSize : integer := 47
+        );
         Port ( Clk : in STD_LOGIC;
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
            Bin : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (46 downto 0);
+           Din : in STD_LOGIC_VECTOR (accumRegSize - 1 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
+           Dout : out STD_LOGIC_VECTOR (accumRegSize - 1 downto 0) := (others => '0');
            Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DoutRdy : out STD_LOGIC := '0');
     end component;

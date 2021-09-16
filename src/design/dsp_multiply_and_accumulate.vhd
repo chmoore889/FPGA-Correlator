@@ -5,12 +5,15 @@ use IEEE.STD_LOGIC_1164.ALL;
 use UNISIM.vcomponents.all;
 
 entity dsp_multiply_and_accumulate is
+    Generic (
+        accumRegSize : integer := 47 --Bit width of registers used for accumulation. Max value of 47.
+    );
     Port ( a : in STD_LOGIC_VECTOR (15 downto 0);
            b : in STD_LOGIC_VECTOR (15 downto 0);
            clk : in STD_LOGIC;
            reset : in STD_LOGIC;
            M1_select : in STD_LOGIC;
-           output : out STD_LOGIC_VECTOR (46 downto 0));
+           output : out STD_LOGIC_VECTOR (accumRegSize - 1 downto 0));
 end dsp_multiply_and_accumulate;
 
 architecture Behavioral of dsp_multiply_and_accumulate is

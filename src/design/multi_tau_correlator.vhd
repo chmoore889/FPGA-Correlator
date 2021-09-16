@@ -2,6 +2,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity multi_tau_correlator is
+    Generic (
+        accumRegSize : integer := 47 --Bit width of registers used for accumulation. Max value of 47.
+    );
     Port ( Clk : in STD_LOGIC;
            Din : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
@@ -15,7 +18,8 @@ architecture Behavioral of multi_tau_correlator is
     component correlator is
         Generic (
             numDelays : integer := 8;
-            additionalLatency : integer := 0
+            additionalLatency : integer := 0;
+            accumRegSize : integer := 47
         );
         Port ( Clk : in STD_LOGIC;
                Ain : in STD_LOGIC_VECTOR (15 downto 0);
@@ -23,14 +27,14 @@ architecture Behavioral of multi_tau_correlator is
                NDin : in STD_LOGIC;
                EODin : in STD_LOGIC;
                Reset : in STD_LOGIC;
-               Din : in STD_LOGIC_VECTOR (46 downto 0);
+               Din : in STD_LOGIC_VECTOR (accumRegSize - 1 downto 0);
                Nin : in STD_LOGIC_VECTOR (15 downto 0);
                DinRdy : in STD_LOGIC;
                Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                BRdy : out STD_LOGIC := '0';
                EODout : out STD_LOGIC;
-               Dout : out STD_LOGIC_VECTOR (46 downto 0) := (others => '0');
+               Dout : out STD_LOGIC_VECTOR (accumRegSize - 1 downto 0) := (others => '0');
                Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
                DoutRdy : out STD_LOGIC := '0');
     end component;
@@ -87,7 +91,7 @@ architecture Behavioral of multi_tau_correlator is
                DoutRdy : out STD_LOGIC);
     end component;
     
-    type DArr is ARRAY (integer range <>) of STD_LOGIC_VECTOR (46 downto 0);
+    type DArr is ARRAY (integer range <>) of STD_LOGIC_VECTOR (accumRegSize - 1 downto 0);
     type Arr16 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (15 downto 0);
     
     constant num_combiners : integer := 8;
@@ -99,7 +103,7 @@ architecture Behavioral of multi_tau_correlator is
     signal D_cascade : DArr (num_combiners downto 0) := (others => (others => '0'));
     signal DRdy_cascade, BRdy_cascade, EOD_cascade : STD_LOGIC_VECTOR (num_combiners downto 0) := (others => '0');
     
-    signal Dout_Int : STD_LOGIC_VECTOR (46 downto 0);
+    signal Dout_Int : STD_LOGIC_VECTOR (accumRegSize - 1 downto 0);
     signal Nout_Int : STD_LOGIC_VECTOR (15 downto 0);
     signal Dout_Int_Rdy : STD_LOGIC;
 begin
@@ -155,7 +159,8 @@ begin
     first_sdc : correlator
     generic map (
         numDelays => 16,
-        additionalLatency => num_combiners
+        additionalLatency => num_combiners,
+        accumRegSize => accumRegSize
     )
     port map (
         Clk => Clk,
@@ -212,7 +217,8 @@ begin
             first_sdc : correlator
             generic map (
                 numDelays => 8,
-                additionalLatency => num_combiners - I
+                additionalLatency => num_combiners - I,
+                accumRegSize => accumRegSize
             )
             port map (
                 Clk => Clk,
