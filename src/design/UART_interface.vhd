@@ -16,13 +16,14 @@ architecture Behavioral of UART_interface is
         PORT (
             clk : IN STD_LOGIC;
             srst : IN STD_LOGIC;
-            din : IN STD_LOGIC_VECTOR(16 DOWNTO 0);
+            din : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             wr_en : IN STD_LOGIC;
             rd_en : IN STD_LOGIC;
-            dout : OUT STD_LOGIC_VECTOR(16 DOWNTO 0);
+            dout : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             full : OUT STD_LOGIC;
             empty : OUT STD_LOGIC;
-            valid : OUT STD_LOGIC
+            valid : OUT STD_LOGIC;
+            underflow : OUT STD_LOGIC
         );
     END COMPONENT;
 
@@ -36,7 +37,7 @@ architecture Behavioral of UART_interface is
     signal DataRdy, EODsig : STD_LOGIC := '0';
     
     signal fifo_Data : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-    signal wr_en, rd_en, fifo_eod, fifo_valid : STD_LOGIC := '0';
+    signal rd_en, fifo_underflow, fifo_valid : STD_LOGIC := '0';
 begin
     output_regs : block
         signal EOD_pulsed : STD_LOGIC := '0';
@@ -50,8 +51,8 @@ begin
                     EOD_pulsed <= '0';
                 else
                     CorrData <= fifo_Data;
-                    CorrDataRdy <= fifo_valid AND NOT fifo_eod;
-                    if fifo_eod = '1' then
+                    CorrDataRdy <= fifo_valid;
+                    if fifo_underflow = '1' then
                         if EOD_pulsed = '0' then
                             CorrEOD <= '1';
                             EOD_pulsed <= '1';
@@ -67,25 +68,23 @@ begin
         end process;
     end block output_regs;
 
-    wr_en <= EODsig OR DataRdy;
     data_store : data_storage_fifo
     PORT MAP (
         clk => Clk,
         srst => Rst,
-        din(16) => EODsig,
-        din(15 downto 0) => Data,
-        wr_en => wr_en,
+        din => Data,
+        wr_en => DataRdy,
         rd_en => rd_en,
-        dout(16) => fifo_eod,
-        dout(15 downto 0) => fifo_Data,
+        dout => fifo_Data,
 --        full => full,
 --        empty => fifo_empty,
-        valid => fifo_valid
+        valid => fifo_valid,
+        underflow => fifo_underflow
     );
     
     dump_data : process(Clk) begin
         if rising_edge(Clk) then
-            if Rst = '1' OR fifo_eod = '1' then
+            if Rst = '1' OR fifo_underflow = '1' then
                 rd_en <= '0';
             elsif EODsig = '1' then
                 rd_en <= '1';
