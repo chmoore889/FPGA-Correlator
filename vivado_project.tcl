@@ -167,9 +167,8 @@ set_property -name "webtalk.questa_export_sim" -value "65" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "64" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "64" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "1" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "65" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "611" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "651" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)

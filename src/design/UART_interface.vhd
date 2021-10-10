@@ -112,7 +112,7 @@ begin
                             end if;
                         end if;
                     when eod =>
-                        if UARTDin = startCode then
+                        if UARTDinRdy = '1' AND UARTDin = startCode then
                             curr_state <= data_start;
                             DataRdy <= '0';
                             EODsig <= '0';
@@ -133,11 +133,11 @@ begin
                             DataRdy <= '1';
                         end if;
                     when data_2 =>
-                        if UARTDin = EODCode then
+                        if UARTDinRdy = '1' AND UARTDin = EODCode then
                             curr_state <= eod;
                             DataRdy <= '0';
                             EODsig <= '1';
-                        elsif UARTDin = startCode then
+                        elsif UARTDinRdy = '1' AND UARTDin = startCode then
                             curr_state <= data_start;
                             DataRdy <= '0';
                             EODsig <= '0';
