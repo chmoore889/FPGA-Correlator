@@ -47,32 +47,22 @@ begin
         UARTDataRdy <= '1';
     
         for I in 1 to 10 loop
-            UARTDataRdy <= '1';
             UARTData <= X"FF"; 
             wait for CLOCK_PERIOD;
-            UARTDataRdy <= '0';
-            wait for CLOCK_PERIOD;
 
-            UARTDataRdy <= '1';
             UARTData <= std_logic_vector(to_unsigned(I, UARTData'LENGTH)); 
             wait for CLOCK_PERIOD;
-            UARTDataRdy <= '0';
-            wait for CLOCK_PERIOD;
 
-            UARTDataRdy <= '1';
             UARTData <= std_logic_vector(to_unsigned(I, UARTData'LENGTH));
-            wait for CLOCK_PERIOD;
-            UARTDataRdy <= '0';
             wait for CLOCK_PERIOD;
         end loop;
         
-        UARTDataRdy <= '1';
         UARTData <= X"55"; 
         wait for CLOCK_PERIOD;
         
         UARTDataRdy <= '0';
         wait until falling_edge(NDinCorr);
-        wait for 10*CLOCK_PERIOD;
+        wait for 5*CLOCK_PERIOD;
         
         finish;
     end process;

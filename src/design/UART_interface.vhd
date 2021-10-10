@@ -29,7 +29,7 @@ architecture Behavioral of UART_interface is
     constant startCode : STD_LOGIC_VECTOR(7 downto 0) := X"FF";
     constant EODCode : STD_LOGIC_VECTOR(7 downto 0) := X"55";
 
-    type STATE is (idle, eod, data_start, data_1, data_2);
+    type STATE is (idle, eod, data_1, data_2);
     signal curr_state : STATE := idle; 
     
     signal Data : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
@@ -100,51 +100,37 @@ begin
             else
                 case curr_state is
                     when idle =>
+                        DataRdy <= '0';
+                        EODsig <= '0';
+
                         if UARTDinRdy = '1' then
                             if UARTDin = startCode then
-                                curr_state <= data_start;
-                                DataRdy <= '0';
-                                EODsig <= '0';
+                                curr_state <= data_1;
                             elsif UARTDin = EODCode then
                                 curr_state <= eod;
-                                DataRdy <= '0';
                                 EODsig <= '1';
                             end if;
                         end if;
                     when eod =>
+                        EODsig <= '0';
+                    
                         if UARTDinRdy = '1' AND UARTDin = startCode then
-                            curr_state <= data_start;
-                            DataRdy <= '0';
-                            EODsig <= '0';
+                            curr_state <= data_1;
                         else
                             curr_state <= idle;
-                            DataRdy <= '0';
-                            EODsig <= '0';
-                        end if;
-                    when data_start =>
-                        if UARTDinRdy = '1' then
-                            curr_state <= data_1;
-                            Data(7 downto 0) <= UARTDin;
                         end if;
                     when data_1 =>
                         if UARTDinRdy = '1' then
                             curr_state <= data_2;
-                            Data(15 downto 8) <= UARTDin;
-                            DataRdy <= '1';
+                            
+                            Data(7 downto 0) <= UARTDin;
                         end if;
                     when data_2 =>
-                        if UARTDinRdy = '1' AND UARTDin = EODCode then
-                            curr_state <= eod;
-                            DataRdy <= '0';
-                            EODsig <= '1';
-                        elsif UARTDinRdy = '1' AND UARTDin = startCode then
-                            curr_state <= data_start;
-                            DataRdy <= '0';
-                            EODsig <= '0';
-                        else
+                        if UARTDinRdy = '1' then
                             curr_state <= idle;
-                            DataRdy <= '0';
-                            EODsig <= '0';
+                            
+                            Data(15 downto 8) <= UARTDin;
+                            DataRdy <= '1';
                         end if;
                 end case;
             end if;
