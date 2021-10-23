@@ -63,7 +63,7 @@ begin
         
         for X in 1 to 2 loop
             for I in dummyData'RANGE loop
-                Din <= std_logic_vector(to_unsigned(dummyData(I), Din'LENGTH));
+                Din <= std_logic_vector(to_signed(dummyData(I), Din'LENGTH));
                 NDin <= '1';
                 if I = dummyData'RIGHT then
                     EODin <= '1';

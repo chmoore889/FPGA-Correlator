@@ -67,7 +67,7 @@ begin
                 isEnd := true;
             end if;
             
-            data <= std_logic_vector(to_unsigned(1, data'LENGTH));
+            data <= std_logic_vector(to_signed(1, data'LENGTH));
             NDin <= '1';
             if isEnd then
                 EODin <= '1';

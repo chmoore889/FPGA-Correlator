@@ -44,7 +44,7 @@ begin
                 DRdyReg <= '0';
             else
                 EODoutReg <= EODin;
-                DoutReg <= std_logic_vector(unsigned(Buf1) + unsigned(Din));
+                DoutReg <= std_logic_vector(signed(Buf1) + signed(Din));
                 DRdyReg <= NDin AND Buf2;
             end if;
         end if;

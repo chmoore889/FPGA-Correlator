@@ -35,8 +35,10 @@ begin
     DoutReg <= Din(31) & new_exponent & Din(22 downto 0);
     DoutRdyReg <= DinRdy;
 
-    orig_exponent <= Din(30 downto 23);    
-    new_exponent <= std_logic_vector(unsigned(orig_exponent) - (2 * num_to_divide));
+    orig_exponent <= Din(30 downto 23);
+    --When Din is 0, don't do scaling
+    new_exponent <= orig_exponent when Din(30 downto 0) = (30 downto 0 => '0') else
+                    std_logic_vector(unsigned(orig_exponent) - (2 * num_to_divide));
     
     process (clk) begin
         if rising_edge(clk) then

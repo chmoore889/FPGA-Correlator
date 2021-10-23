@@ -58,7 +58,7 @@ architecture Behavioral of divided_correlator is
                             signal dataCtrl : out STD_LOGIC_VECTOR (15 downto 0);
                             signal NDCtrl, EODCtrl : out STD_LOGIC) is
     begin
-        dataCtrl <= std_logic_vector(to_unsigned(dataInt, dataCtrl'LENGTH));
+        dataCtrl <= std_logic_vector(to_signed(dataInt, dataCtrl'LENGTH));
         NDCtrl <= '1';
         if isEnd AND NOT delayEnd then
             EODCtrl <= '1';

@@ -61,7 +61,8 @@ architecture Behavioral of top is
     
     component multi_tau_correlator is
         Port ( Clk : in STD_LOGIC;
-               Din : in STD_LOGIC_VECTOR (15 downto 0);
+               Ain : in STD_LOGIC_VECTOR (15 downto 0);
+               Bin : in STD_LOGIC_VECTOR (15 downto 0);
                NDin : in STD_LOGIC;
                EODin : in STD_LOGIC;
                Reset : in STD_LOGIC;
@@ -132,7 +133,8 @@ begin
     port map (
         Clk => Clk,
         Reset => invert_rst,
-        Din => DinCorr,
+        Ain => DinCorr,
+        Bin => DinCorr,
         NDin => NDinCorr,
         EODin => EODinCorr,
         Dout => DoutCorr,

@@ -3,7 +3,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity multi_tau_correlator is
     Port ( Clk : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (15 downto 0);
+           Ain : in STD_LOGIC_VECTOR (15 downto 0);
+           Bin : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
            EODin : in STD_LOGIC;
            Reset : in STD_LOGIC;
@@ -46,11 +47,23 @@ architecture Behavioral of multi_tau_correlator is
                EODout : out STD_LOGIC);
     end component;
     
-    COMPONENT uint32_to_single
+    COMPONENT int32_to_single
         PORT (
             aclk : IN STD_LOGIC;
+            aresetn : IN STD_LOGIC;
             s_axis_a_tvalid : IN STD_LOGIC;
             s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            m_axis_result_tvalid : OUT STD_LOGIC;
+            m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        );
+    END COMPONENT;
+    
+    COMPONENT int16_to_single
+        PORT (
+            aclk : IN STD_LOGIC;
+            aresetn : IN STD_LOGIC;
+            s_axis_a_tvalid : IN STD_LOGIC;
+            s_axis_a_tdata : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             m_axis_result_tvalid : OUT STD_LOGIC;
             m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
@@ -59,6 +72,7 @@ architecture Behavioral of multi_tau_correlator is
     COMPONENT single_divider
         PORT (
             aclk : IN STD_LOGIC;
+            aresetn : IN STD_LOGIC;
             s_axis_a_tvalid : IN STD_LOGIC;
             s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             s_axis_b_tvalid : IN STD_LOGIC;
@@ -99,22 +113,27 @@ begin
         
         signal Dout_unscaled : STD_LOGIC_VECTOR (31 downto 0);
         signal Dout_unscaled_Rdy : STD_LOGIC;
+        
+        signal Reset_invert : STD_LOGIC;
     begin
-        D : uint32_to_single
+        Reset_invert <= NOT Reset;
+    
+        D : int32_to_single
         port map (
             aclk => Clk,
+            aresetn => Reset_invert,
             s_axis_a_tvalid => Dout_Int_Rdy,
             s_axis_a_tdata => Dout_Int,
             m_axis_result_tvalid => Dout_Single_Rdy,
             m_axis_result_tdata => Dout_Single
         );
         
-        N : uint32_to_single
+        N : int16_to_single
         port map (
             aclk => Clk,
+            aresetn => Reset_invert,
             s_axis_a_tvalid => Dout_Int_Rdy,
-            s_axis_a_tdata(31 downto Nout_Int'HIGH + 1) => (others => '0'),
-            s_axis_a_tdata(Nout_Int'RANGE) => Nout_Int,
+            s_axis_a_tdata => Nout_Int,
             m_axis_result_tvalid => Nout_Single_Rdy,
             m_axis_result_tdata => Nout_Single
         );
@@ -122,6 +141,7 @@ begin
         divider : single_divider
         port map (
             aclk => Clk,
+            aresetn => Reset_invert,
             s_axis_a_tvalid => Dout_Single_Rdy,
             s_axis_a_tdata => Dout_Single,
             s_axis_b_tvalid => Nout_Single_Rdy,
@@ -148,8 +168,8 @@ begin
     )
     port map (
         Clk => Clk,
-        Ain => Din,
-        Bin => Din,
+        Ain => Ain,
+        Bin => Bin,
         NDin => NDin,
         EODin => EODin,
         Reset => Reset,

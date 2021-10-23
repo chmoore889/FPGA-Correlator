@@ -31,21 +31,21 @@ begin
     
     mult_mux_selects : block
         signal Buf1 : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-        signal mux_selector : STD_LOGIC;
+        signal multiple_accum_enable : STD_LOGIC;
         
         component dsp_multiply_and_accumulate is
             Port ( a : in STD_LOGIC_VECTOR (15 downto 0);
                    b : in STD_LOGIC_VECTOR (15 downto 0);
                    clk : in STD_LOGIC;
                    reset : in STD_LOGIC;
-                   M1_select : in STD_LOGIC;
+                   enable : in STD_LOGIC;
                    output : out STD_LOGIC_VECTOR (31 downto 0));
         end component;
         
         signal dsp_reset : STD_LOGIC;
     begin
         dsp_reset <= Reset OR EODDelay;
-        mux_selector <= NOT Reset AND NDin;
+        multiple_accum_enable <= NOT Reset AND NDin;
     
         Bout <= Buf1;
         process (Clk) begin
@@ -64,7 +64,7 @@ begin
             b => Bin,
             clk => Clk,
             reset => dsp_reset,
-            M1_select => mux_selector,
+            enable => multiple_accum_enable,
             output => multiplier_out
         );
     end block mult_mux_selects;

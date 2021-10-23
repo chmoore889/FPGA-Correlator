@@ -42,7 +42,7 @@ architecture Behavioral of correlator_testbench is
                             signal dataCtrl : out STD_LOGIC_VECTOR (15 downto 0);
                             signal NDCtrl, EODCtrl : out STD_LOGIC) is
     begin
-        dataCtrl <= std_logic_vector(to_unsigned(dataInt, dataCtrl'LENGTH));
+        dataCtrl <= std_logic_vector(to_signed(dataInt, dataCtrl'LENGTH));
         NDCtrl <= '1';
         if isEnd AND NOT delayEnd then
             EODCtrl <= '1';
@@ -188,15 +188,15 @@ begin
                     accum := accum + dummyData(Y) * dummyData(Y+I);
                 end loop;
                 
-                assert accum = to_integer(unsigned(Dout)) report "DOut is incorrect - expected: "
+                assert accum = to_integer(signed(Dout)) report "DOut is incorrect - expected: "
                 & integer'image(accum)
                 & " actual: "
-                & integer'image(to_integer(unsigned(Dout)));
+                & integer'image(to_integer(signed(Dout)));
                 
-                assert (dummyData'RIGHT - I) = to_integer(unsigned(NOut)) report "NOut is incorrect - expected: "
+                assert (dummyData'RIGHT - I) = to_integer(signed(NOut)) report "NOut is incorrect - expected: "
                 & integer'image(dummyData'RIGHT - I)
                 & " actual: "
-                & integer'image(to_integer(unsigned(NOut)));
+                & integer'image(to_integer(signed(NOut)));
             end loop;
         end loop;
         
