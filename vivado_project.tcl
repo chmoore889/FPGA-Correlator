@@ -167,7 +167,6 @@ set_property -name "webtalk.questa_export_sim" -value "73" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "72" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "72" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "1" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "73" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "678" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
@@ -636,6 +635,7 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
+set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/Christopher/Desktop/DCS/fpga/vivado_project/vivado_project.srcs/utils_1/imports/synth_1" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
 # set the current synth run
@@ -858,9 +858,9 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
-set_property -name "incremental_checkpoint" -value "C:/Users/Christopher/Desktop/DCS/fpga/utils/top_routed.dcp" -objects $obj
+set_property -name "incremental_checkpoint" -value "C:/Users/Christopher/Desktop/Research/fpga/utils/top_routed.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
-set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/Christopher/Desktop/DCS/fpga/utils" -objects $obj
+set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/Christopher/Desktop/Research/fpga/utils" -objects $obj
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
