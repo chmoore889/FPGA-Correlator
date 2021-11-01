@@ -9,11 +9,12 @@ entity dsp_multiply_and_accumulate is
            reset : in STD_LOGIC;
            enable : in STD_LOGIC;
            output : out STD_LOGIC_VECTOR (31 downto 0));
+           
+    attribute use_dsp : string;
+    attribute use_dsp of dsp_multiply_and_accumulate : entity is "yes";
 end entity;
 
 architecture Behavioral of dsp_multiply_and_accumulate is
-    attribute use_dsp : string;
-
     signal accum : SIGNED (output'RANGE) := (others => '0');
     signal a_signed : SIGNED (a'RANGE);
     signal b_signed : SIGNED (b'RANGE);
