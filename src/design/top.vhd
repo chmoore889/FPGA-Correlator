@@ -70,6 +70,14 @@ architecture Behavioral of top is
                DoutRdy : out STD_LOGIC := '0');
     end component;
     
+    component clk_wiz
+        port
+        (
+            clk_out1 : out std_logic;
+            clk_in1 : in std_logic
+        );
+    end component;
+    
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
     signal NDinCorr, EODinCorr : STD_LOGIC;
     
@@ -81,18 +89,26 @@ architecture Behavioral of top is
     signal UARTDoutRdy : STD_LOGIC;
     
     signal invert_rst : STD_LOGIC;
+    
+    signal clk_boost : STD_LOGIC;
 begin
+    clk_gen : clk_wiz
+    port map ( 
+        clk_out1 => clk_boost,
+        clk_in1 => Clk
+    );
+
     invert_rst <= NOT Rst;
 
     UART_COM : UART
     GENERIC MAP (
-        CLK_FREQ => 100e6,
-        BAUD_RATE => 3_125_000,
+        CLK_FREQ => 125e6,
+        BAUD_RATE => 3_906_250,
         PARITY_BIT => "none",
         USE_DEBOUNCER => FALSE
     )
     PORT MAP (
-        CLK => Clk,
+        CLK => clk_boost,
         RST => invert_rst,
         UART_TXD => UART_tx,
         UART_RXD => UART_rx,
@@ -107,7 +123,7 @@ begin
     
     interface : UART_interface
     port map (
-        Clk => Clk,
+        Clk => clk_boost,
         Rst => invert_rst,
         UARTDin => UARTDout,
         UARTDinRdy => UARTDoutRdy,
@@ -118,7 +134,7 @@ begin
     
     corr_out : corr_out_fifo
     PORT MAP (
-        clk => Clk,
+        clk => clk_boost,
         srst => invert_rst,
         din => DoutCorr,
         wr_en => DoutRdyCorr,
@@ -131,7 +147,7 @@ begin
     
     correlator : multi_tau_correlator
     port map (
-        Clk => Clk,
+        Clk => clk_boost,
         Reset => invert_rst,
         Ain => DinCorr,
         Bin => DinCorr,
