@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.time_multiplex.ALL;
 
 entity top is
     Port ( Clk : in STD_LOGIC;
@@ -36,13 +37,17 @@ architecture Behavioral of top is
     end component UART;
     
     component UART_interface
+        Generic (
+            numChannels : integer
+        );
         Port ( Clk : in STD_LOGIC;
                Rst : in STD_LOGIC;
                UARTDin : in STD_LOGIC_VECTOR (7 downto 0);
                UARTDinRdy : in STD_LOGIC;
-               CorrData : out STD_LOGIC_VECTOR (15 downto 0);
-               CorrDataRdy : out STD_LOGIC;
-               CorrEOD : out STD_LOGIC);
+               CorrData : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+               CorrDataRdy : out STD_LOGIC := '0';
+               CorrEOD : out STD_LOGIC := '0';
+               ChaInSel : out STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0));
     end component UART_interface;
     
     COMPONENT corr_out_fifo
@@ -60,25 +65,24 @@ architecture Behavioral of top is
     END COMPONENT;
     
     component multi_tau_correlator is
+        Generic (
+            numChannels : integer
+        );
         Port ( Clk : in STD_LOGIC;
+               ChaInSel : in STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
                Ain : in STD_LOGIC_VECTOR (15 downto 0);
                Bin : in STD_LOGIC_VECTOR (15 downto 0);
                NDin : in STD_LOGIC;
                EODin : in STD_LOGIC;
                Reset : in STD_LOGIC;
-               Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+               Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0'); --Normalized single-precision value.
                DoutRdy : out STD_LOGIC := '0');
     end component;
     
-    component clk_wiz
-        port
-        (
-            clk_out1 : out std_logic;
-            clk_in1 : in std_logic
-        );
-    end component;
+    constant numChannels : integer := 2;
     
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
+    signal ChaInSel : STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
     signal NDinCorr, EODinCorr : STD_LOGIC;
     
     signal DoutCorr : STD_LOGIC_VECTOR (31 downto 0);
@@ -89,26 +93,18 @@ architecture Behavioral of top is
     signal UARTDoutRdy : STD_LOGIC;
     
     signal invert_rst : STD_LOGIC;
-    
-    signal clk_boost : STD_LOGIC;
 begin
-    clk_gen : clk_wiz
-    port map ( 
-        clk_out1 => clk_boost,
-        clk_in1 => Clk
-    );
-
     invert_rst <= NOT Rst;
 
     UART_COM : UART
     GENERIC MAP (
-        CLK_FREQ => 125e6,
-        BAUD_RATE => 3_906_250,
+        CLK_FREQ => 100e6,
+        BAUD_RATE => 3_125_000,
         PARITY_BIT => "none",
         USE_DEBOUNCER => FALSE
     )
     PORT MAP (
-        CLK => clk_boost,
+        CLK => Clk,
         RST => invert_rst,
         UART_TXD => UART_tx,
         UART_RXD => UART_rx,
@@ -122,19 +118,23 @@ begin
     );
     
     interface : UART_interface
+    generic map (
+        numChannels => numChannels
+    )
     port map (
-        Clk => clk_boost,
+        Clk => Clk,
         Rst => invert_rst,
         UARTDin => UARTDout,
         UARTDinRdy => UARTDoutRdy,
         CorrData => DinCorr,
         CorrDataRdy => NDinCorr,
-        CorrEOD => EODinCorr
+        CorrEOD => EODinCorr,
+        ChaInSel => ChaInSel
     );
     
     corr_out : corr_out_fifo
     PORT MAP (
-        clk => clk_boost,
+        clk => Clk,
         srst => invert_rst,
         din => DoutCorr,
         wr_en => DoutRdyCorr,
@@ -146,9 +146,13 @@ begin
     );
     
     correlator : multi_tau_correlator
+    generic map (
+        numChannels => numChannels
+    )
     port map (
-        Clk => clk_boost,
+        Clk => Clk,
         Reset => invert_rst,
+        ChaInSel => ChaInSel,
         Ain => DinCorr,
         Bin => DinCorr,
         NDin => NDinCorr,

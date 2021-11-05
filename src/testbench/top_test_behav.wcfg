@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="top_test_func_impl.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="top_test" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="99371667fs"></ZoomStartTime>
+      <ZoomEndTime time="99452268fs"></ZoomEndTime>
+      <Cursor1Time time="99385100fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="157"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject fp_name="/top_test/clock" type="logic">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/Rst" type="logic">
+      <obj_property name="ElementShortName">Rst</obj_property>
+      <obj_property name="ObjectShortName">Rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/Tx" type="logic">
+      <obj_property name="ElementShortName">Tx</obj_property>
+      <obj_property name="ObjectShortName">Tx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/Rx" type="logic">
+      <obj_property name="ElementShortName">Rx</obj_property>
+      <obj_property name="ObjectShortName">Rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/under_test/correlator/\normalize.N\/s_axis_a_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_a_tdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/under_test/correlator/\normalize.D\/s_axis_a_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_a_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/under_test/correlator/\normalize.D\/s_axis_a_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_test/under_test/correlator/first_sdc/\mult_accums[0].first.mult_first\/\data_handling.NoutArr_reg[1]_13\" type="array">
+      <obj_property name="ElementShortName">\data_handling.NoutArr_reg[1]_13\[15:0]</obj_property>
+      <obj_property name="ObjectShortName">\data_handling.NoutArr_reg[1]_13\[15:0]</obj_property>
+   </wvobject>
+</wave_config>

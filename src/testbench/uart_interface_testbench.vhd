@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use work.time_multiplex.ALL;
 use std.env.finish;
 
 entity uart_interface_testbench is
@@ -11,13 +12,17 @@ architecture Behavioral of uart_interface_testbench is
     signal clock : std_logic := '0';
 
     component UART_interface
+        Generic (
+            numChannels : integer
+        );
         Port ( Clk : in STD_LOGIC;
                Rst : in STD_LOGIC;
                UARTDin : in STD_LOGIC_VECTOR (7 downto 0);
                UARTDinRdy : in STD_LOGIC;
-               CorrData : out STD_LOGIC_VECTOR (15 downto 0);
-               CorrDataRdy : out STD_LOGIC;
-               CorrEOD : out STD_LOGIC);
+               CorrData : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+               CorrDataRdy : out STD_LOGIC := '0';
+               CorrEOD : out STD_LOGIC := '0';
+               ChaInSel : out STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0) := (others => '0'));
     end component UART_interface;
     
     signal UARTData : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
@@ -33,6 +38,9 @@ begin
     end process clock_driver;
 
     interface : UART_interface
+    generic map (
+        numChannels => 4
+    )
     port map (
         Clk => clock,
         Rst => Rst,

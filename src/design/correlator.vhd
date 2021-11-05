@@ -1,12 +1,15 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.time_multiplex.ALL;
 
 entity correlator is
     Generic (
         numDelays : integer := 8;
-        additionalLatency : integer := 0
+        additionalLatency : integer := 0;
+        numChannels : integer
     );
     Port ( Clk : in STD_LOGIC;
+           ChaInSel : in STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
            Ain : in STD_LOGIC_VECTOR (15 downto 0);
            Bin : in STD_LOGIC_VECTOR (15 downto 0);
            NDin : in STD_LOGIC;
@@ -15,6 +18,7 @@ entity correlator is
            Din : in STD_LOGIC_VECTOR (31 downto 0);
            Nin : in STD_LOGIC_VECTOR (15 downto 0);
            DinRdy : in STD_LOGIC;
+           ChaOutSel : out STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
            Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            BRdy : out STD_LOGIC := '0';
@@ -26,40 +30,47 @@ end correlator;
 
 architecture Behavioral of correlator is
     component multiplication_accumulator is
+        Generic (
+            numChannels : integer
+        );
         Port ( Clk : in STD_LOGIC;
-           Ain : in STD_LOGIC_VECTOR (15 downto 0);
-           Bin : in STD_LOGIC_VECTOR (15 downto 0);
-           NDin : in STD_LOGIC;
-           EODin : in STD_LOGIC;
-           Reset : in STD_LOGIC;
-           Din : in STD_LOGIC_VECTOR (31 downto 0);
-           Nin : in STD_LOGIC_VECTOR (15 downto 0);
-           DinRdy : in STD_LOGIC;
-           Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-           Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-           BRdy : out STD_LOGIC := '0';
-           EODout : out STD_LOGIC;
-           Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
-           Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
-           DoutRdy : out STD_LOGIC := '0');
+               ChaInSel : in STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
+               Ain : in STD_LOGIC_VECTOR (15 downto 0);
+               Bin : in STD_LOGIC_VECTOR (15 downto 0);
+               NDin : in STD_LOGIC;
+               EODin : in STD_LOGIC;
+               Reset : in STD_LOGIC;
+               Din : in STD_LOGIC_VECTOR (31 downto 0);
+               Nin : in STD_LOGIC_VECTOR (15 downto 0);
+               DinRdy : in STD_LOGIC;
+               ChaOutSel : out STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
+               Aout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+               Bout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+               BRdy : out STD_LOGIC := '0';
+               EODout : out STD_LOGIC;
+               Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0');
+               Nout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+               DoutRdy : out STD_LOGIC := '0');
     end component;
     
     signal EODinDelayed : STD_LOGIC;
     
-    type DArr is ARRAY (integer range <>) of STD_LOGIC_VECTOR (Dout'RANGE);
-    type Arr16 is ARRAY (integer range <>) of STD_LOGIC_VECTOR (15 downto 0);
+    type CHA_SEL_ARRAY is array (natural range <>) of std_logic_vector(ChaInSel'RANGE);
     
     --Connections between each multiplication accumulator.
     --(I) refers to connections to the next module.
     --(I-1) is the previous.
-    signal A_cascade, B_cascade, N_cascade : Arr16 (numDelays-1 downto 0) := (others => (others => '0'));
-    signal D_cascade : DArr (numDelays-1 downto 0) := (others => (others => '0'));
+    signal A_cascade, B_cascade : STD_LOGIC_DinARRAY (numDelays-1 downto 0) := (others => (others => '0'));
+    signal N_cascade : STD_LOGIC_NARRAY (numDelays-1 downto 0) := (others => (others => '0'));
+    signal D_cascade : STD_LOGIC_DARRAY (numDelays-1 downto 0) := (others => (others => '0'));
     signal DRdy_cascade, BRdy_cascade, EOD_cascade : STD_LOGIC_VECTOR (numDelays-1 downto 0) := (others => '0');
+    signal ChaSel_cascade : CHA_SEL_ARRAY (numDelays-1 downto 0) := (others => (others => '0'));
 begin
     --Cascade connections of last module to the outside of this entity
     Aout <= A_cascade(A_cascade'HIGH);
     Bout <= B_cascade(B_cascade'HIGH);
     BRdy <= BRdy_cascade(BRdy_cascade'HIGH);
+    ChaOutSel <= ChaSel_cascade(ChaSel_cascade'HIGH);
     EODout <= EODin;
     D_cascade(D_cascade'HIGH) <= Din;
     DRdy_cascade(DRdy_cascade'HIGH) <= DinRdy;
@@ -87,9 +98,13 @@ begin
     mult_accums : for I in 0 to numDelays-1 generate
         first : if I = 0 generate
             mult_first : multiplication_accumulator
+            generic map (
+                numChannels => numChannels
+            )
             port map (
                 Clk => clk,
                 Reset => Reset,
+                ChaInSel => ChaInSel,
                 Ain => Ain,
                 Bin => Bin,
                 NDin => NDin,
@@ -97,6 +112,7 @@ begin
                 Din => D_cascade(I),
                 DinRdy => DRdy_cascade(I),
                 Nin => N_cascade(I),
+                ChaOutSel => ChaSel_cascade(I),
                 Aout => A_cascade(I),
                 Bout => B_cascade(I),
                 BRdy => BRdy_cascade(I),
@@ -109,9 +125,13 @@ begin
 
         other : if I > 0 generate 
             mult_other : multiplication_accumulator
+            generic map (
+                numChannels => numChannels
+            )
             port map (
                 Clk => clk,
                 Reset => Reset,
+                ChaInSel => ChaSel_cascade(I - 1),
                 Ain => A_cascade(I - 1),
                 Bin => B_cascade(I - 1),
                 NDin => BRdy_cascade(I - 1),
@@ -119,6 +139,7 @@ begin
                 Din => D_cascade(I),
                 DinRdy => DRdy_cascade(I),
                 Nin => N_cascade(I),
+                ChaOutSel => ChaSel_cascade(I),
                 Aout => A_cascade(I),
                 Bout => B_cascade(I),
                 BRdy => BRdy_cascade(I),
