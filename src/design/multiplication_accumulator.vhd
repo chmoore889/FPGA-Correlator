@@ -30,7 +30,7 @@ end multiplication_accumulator;
 architecture Behavioral of multiplication_accumulator is
     signal EODDelay : STD_LOGIC := '0';
     
-    signal multiplier_out : STD_LOGIC_DARRAY (numChannels - 1 downto 0);
+    signal multiplier_out : STD_LOGIC_DARRAY (numChannels - 1 downto 0);    
     signal counter_out : STD_LOGIC_NARRAY (numChannels - 1 downto 0);
 begin
     Aout <= Ain;
