@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="123078167fs"></ZoomStartTime>
-      <ZoomEndTime time="123239168fs"></ZoomEndTime>
-      <Cursor1Time time="123158167fs"></Cursor1Time>
+      <ZoomStartTime time="164035984fs"></ZoomStartTime>
+      <ZoomEndTime time="164198585fs"></ZoomEndTime>
+      <Cursor1Time time="164225984fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="164"></NameColumnWidth>
-      <ValueColumnWidth column_width="59"></ValueColumnWidth>
+      <NameColumnWidth column_width="157"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="16" />
+   <WVObjectSize size="17" />
    <wvobject fp_name="/multi_tau_correlator_testbench/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -61,6 +61,11 @@
       <obj_property name="ElementShortName">Dout_Int[31:0]</obj_property>
       <obj_property name="ObjectShortName">Dout_Int[31:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/multi_tau_correlator_testbench/to_test/Nout_Int" type="array">
+      <obj_property name="ElementShortName">Nout_Int[15:0]</obj_property>
+      <obj_property name="ObjectShortName">Nout_Int[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/multi_tau_correlator_testbench/to_test/Dout_Int_Rdy" type="logic">
       <obj_property name="ElementShortName">Dout_Int_Rdy</obj_property>

@@ -19,7 +19,6 @@ proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
    "${origin_dir}/src/design/ip/single_divider/single_divider.xci" \
-   "${origin_dir}/src/design/ip/int16_to_single/int16_to_single.xci" \
    "${origin_dir}/src/design/ip/int32_to_single/int32_to_single.xci" \
    "${origin_dir}/src/design/ip/data_storage_fifo/data_storage_fifo.xci" \
    "${origin_dir}/src/design/time_multiplex.vhd" \
@@ -167,16 +166,16 @@ set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "93" -objects $obj
-set_property -name "webtalk.ies_export_sim" -value "93" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "94" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "101" -objects $obj
+set_property -name "webtalk.ies_export_sim" -value "101" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "102" -objects $obj
 set_property -name "webtalk.modelsim_launch_sim" -value "1" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "94" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "93" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "102" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "101" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "93" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "94" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "795" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "101" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "102" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "811" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -188,7 +187,6 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${origin_dir}/src/design/ip/single_divider/single_divider.xci"] \
- [file normalize "${origin_dir}/src/design/ip/int16_to_single/int16_to_single.xci"] \
  [file normalize "${origin_dir}/src/design/ip/int32_to_single/int32_to_single.xci"] \
  [file normalize "${origin_dir}/src/design/ip/data_storage_fifo/data_storage_fifo.xci"] \
  [file normalize "${origin_dir}/src/design/time_multiplex.vhd"] \
@@ -213,15 +211,6 @@ add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/src/design/ip/single_divider/single_divider.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
-}
-
-set file "$origin_dir/src/design/ip/int16_to_single/int16_to_single.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
@@ -565,7 +554,6 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 # Set 'multi_tau_correlator' fileset properties
 set obj [get_filesets multi_tau_correlator]
 set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
-set_property -name "incremental" -value "0" -objects $obj
 set_property -name "nl.mode" -value "funcsim" -objects $obj
 set_property -name "top" -value "multi_tau_correlator_testbench" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj

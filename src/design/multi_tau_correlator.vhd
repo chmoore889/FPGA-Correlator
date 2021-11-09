@@ -72,17 +72,6 @@ architecture Behavioral of multi_tau_correlator is
         );
     END COMPONENT;
     
-    COMPONENT int16_to_single
-        PORT (
-            aclk : IN STD_LOGIC;
-            aresetn : IN STD_LOGIC;
-            s_axis_a_tvalid : IN STD_LOGIC;
-            s_axis_a_tdata : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            m_axis_result_tvalid : OUT STD_LOGIC;
-            m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-        );
-    END COMPONENT;
-    
     COMPONENT single_divider
         PORT (
             aclk : IN STD_LOGIC;
@@ -146,12 +135,13 @@ begin
             m_axis_result_tdata => Dout_Single
         );
         
-        N : int16_to_single
+        N : int32_to_single
         port map (
             aclk => Clk,
             aresetn => Reset_invert,
             s_axis_a_tvalid => Dout_Int_Rdy,
-            s_axis_a_tdata => Nout_Int,
+            s_axis_a_tdata(31 downto 16) => (others => '0'),
+            s_axis_a_tdata(Nout_Int'RANGE) => Nout_Int,
             m_axis_result_tvalid => Nout_Single_Rdy,
             m_axis_result_tdata => Nout_Single
         );
