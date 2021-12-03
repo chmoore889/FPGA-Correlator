@@ -79,7 +79,23 @@ architecture Behavioral of top is
                DoutRdy : out STD_LOGIC := '0');
     end component;
     
-    constant numChannels : integer := 4;
+    component linear_correlator is
+        Generic (
+            numChannels : integer
+        );
+        Port ( Clk : in STD_LOGIC;
+               ChaInSel : in STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
+               Ain : in STD_LOGIC_VECTOR (15 downto 0);
+               Bin : in STD_LOGIC_VECTOR (15 downto 0);
+               NDin : in STD_LOGIC;
+               EODin : in STD_LOGIC;
+               Reset : in STD_LOGIC;
+               Dout : out STD_LOGIC_VECTOR (31 downto 0) := (others => '0'); --Normalized single-precision value.
+               DoutRdy : out STD_LOGIC := '0');
+    end component;
+    
+    constant numChannels : integer := 2;
+    constant isMultiTau : boolean := false;
     
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
     signal ChaInSel : STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
@@ -145,19 +161,39 @@ begin
         valid => DoutRdyFIFO
     );
     
-    correlator : multi_tau_correlator
-    generic map (
-        numChannels => numChannels
-    )
-    port map (
-        Clk => Clk,
-        Reset => invert_rst,
-        ChaInSel => ChaInSel,
-        Ain => DinCorr,
-        Bin => DinCorr,
-        NDin => NDinCorr,
-        EODin => EODinCorr,
-        Dout => DoutCorr,
-        DoutRdy => DoutRdyCorr
-    );
+    gen_mt_correlator : if isMultiTau generate 
+        multi_tau : multi_tau_correlator
+        generic map (
+            numChannels => numChannels
+        )
+        port map (
+            Clk => Clk,
+            Reset => invert_rst,
+            ChaInSel => ChaInSel,
+            Ain => DinCorr,
+            Bin => DinCorr,
+            NDin => NDinCorr,
+            EODin => EODinCorr,
+            Dout => DoutCorr,
+            DoutRdy => DoutRdyCorr
+        );
+    end generate;
+    
+    gen_linear_correlator : if NOT isMultiTau generate 
+        linear : linear_correlator
+        generic map (
+            numChannels => numChannels
+        )
+        port map (
+            Clk => Clk,
+            Reset => invert_rst,
+            ChaInSel => ChaInSel,
+            Ain => DinCorr,
+            Bin => DinCorr,
+            NDin => NDinCorr,
+            EODin => EODinCorr,
+            Dout => DoutCorr,
+            DoutRdy => DoutRdyCorr
+        );
+    end generate;
 end Behavioral;

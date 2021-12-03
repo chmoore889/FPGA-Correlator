@@ -27,6 +27,9 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/design/correlator.vhd" \
    "${origin_dir}/src/design/counter.vhd" \
    "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd" \
+   "${origin_dir}/src/design/fake_combiner.vhd" \
+   "${origin_dir}/src/design/linear_correlator.vhd" \
+   "${origin_dir}/src/design/mac_counter.vhd" \
    "${origin_dir}/src/design/multi_tau_correlator.vhd" \
    "${origin_dir}/src/design/multiplication_accumulator.vhd" \
    "${origin_dir}/src/design/scaler.vhd" \
@@ -37,7 +40,6 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/uart-for-fpga/rtl/comp/uart_tx.vhd" \
    "${origin_dir}/uart-for-fpga/rtl/uart.vhd" \
    "${origin_dir}/src/design/top.vhd" \
-   "${origin_dir}/src/design/mac_counter.vhd" \
    "${origin_dir}/src/design/ip/corr_out_fifo/corr_out_fifo.xci" \
    "${origin_dir}/src/constraints/Arty-A7-100-Master.xdc" \
    "${origin_dir}/src/testbench/multiplication_accumulator_testbench.vhd" \
@@ -56,6 +58,7 @@ proc checkRequiredFiles { origin_dir} {
    "${origin_dir}/src/testbench/uart_interface_testbench_behav.wcfg" \
    "${origin_dir}/src/testbench/top.vhd" \
    "${origin_dir}/src/testbench/top_test_behav.wcfg" \
+   "${origin_dir}/src/testbench/linear_correlator_testbench.vhd" \
    "${origin_dir}/utils/top_routed.dcp" \
    "${origin_dir}/utils/top.dcp" \
   ]
@@ -164,7 +167,6 @@ set_property -name "platform.board_id" -value "nexys-a7-100t" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
-set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
 set_property -name "webtalk.activehdl_export_sim" -value "101" -objects $obj
 set_property -name "webtalk.ies_export_sim" -value "101" -objects $obj
@@ -175,7 +177,7 @@ set_property -name "webtalk.riviera_export_sim" -value "101" -objects $obj
 set_property -name "webtalk.riviera_launch_sim" -value "7" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "101" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "102" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "811" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "824" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -195,6 +197,9 @@ set files [list \
  [file normalize "${origin_dir}/src/design/correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/counter.vhd"] \
  [file normalize "${origin_dir}/src/design/dsp_multiply_and_accumulate.vhd"] \
+ [file normalize "${origin_dir}/src/design/fake_combiner.vhd"] \
+ [file normalize "${origin_dir}/src/design/linear_correlator.vhd"] \
+ [file normalize "${origin_dir}/src/design/mac_counter.vhd"] \
  [file normalize "${origin_dir}/src/design/multi_tau_correlator.vhd"] \
  [file normalize "${origin_dir}/src/design/multiplication_accumulator.vhd"] \
  [file normalize "${origin_dir}/src/design/scaler.vhd"] \
@@ -205,7 +210,6 @@ set files [list \
  [file normalize "${origin_dir}/uart-for-fpga/rtl/comp/uart_tx.vhd"] \
  [file normalize "${origin_dir}/uart-for-fpga/rtl/uart.vhd"] \
  [file normalize "${origin_dir}/src/design/top.vhd"] \
- [file normalize "${origin_dir}/src/design/mac_counter.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -267,6 +271,21 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
+set file "$origin_dir/src/design/fake_combiner.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/linear_correlator.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/design/mac_counter.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 set file "$origin_dir/src/design/multi_tau_correlator.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -313,11 +332,6 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/src/design/top.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "$origin_dir/src/design/mac_counter.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
@@ -623,6 +637,36 @@ set_property -name "nl.mode" -value "funcsim" -objects $obj
 set_property -name "sim_mode" -value "post-synthesis" -objects $obj
 set_property -name "top" -value "top_test" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
+
+# Create 'linear_correlator' fileset (if not found)
+if {[string equal [get_filesets -quiet linear_correlator] ""]} {
+  create_fileset -simset linear_correlator
+}
+
+# Set 'linear_correlator' fileset object
+set obj [get_filesets linear_correlator]
+set files [list \
+ [file normalize "${origin_dir}/src/testbench/linear_correlator_testbench.vhd"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'linear_correlator' fileset file properties for remote files
+set file "$origin_dir/src/testbench/linear_correlator_testbench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets linear_correlator] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+
+# Set 'linear_correlator' fileset file properties for local files
+# None
+
+# Set 'linear_correlator' fileset properties
+set obj [get_filesets linear_correlator]
+set_property -name "hbs.configure_design_for_hier_access" -value "1" -objects $obj
+set_property -name "top" -value "linear_correlator_testbench" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "INF" -objects $obj
 
 # Set 'utils_1' fileset object
