@@ -94,8 +94,8 @@ architecture Behavioral of top is
                DoutRdy : out STD_LOGIC := '0');
     end component;
     
-    constant numChannels : integer := 2;
-    constant isMultiTau : boolean := false;
+    constant numChannels : integer := 1;
+    constant isMultiTau : boolean := true;
     
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
     signal ChaInSel : STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);
