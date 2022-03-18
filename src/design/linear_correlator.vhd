@@ -45,7 +45,7 @@ architecture Behavioral of linear_correlator is
                DoutRdy : out STD_LOGIC := '0');
     end component;
     
-    component fake_combiner is
+    component linear_buffer is
         Generic (
             numChannels : integer
         );
@@ -188,7 +188,7 @@ begin
             
             signal correlator_NDin, correlator_EODin : STD_LOGIC;
         begin
-            combine_A : fake_combiner
+            buff_A : linear_buffer
             generic map (
                 numChannels => numChannels
             )
@@ -205,7 +205,7 @@ begin
                 EODout => A_EODout
             );
             
-            combine_B : fake_combiner
+            buff_B : linear_buffer
             generic map (
                 numChannels => numChannels
             )

@@ -95,7 +95,7 @@ architecture Behavioral of top is
     end component;
     
     constant numChannels : integer := 1;
-    constant isMultiTau : boolean := true;
+    constant isMultiTau : boolean := false;
     
     signal DinCorr : STD_LOGIC_VECTOR (15 downto 0);
     signal ChaInSel : STD_LOGIC_VECTOR (channels_to_bits(numChannels) - 1 downto 0);

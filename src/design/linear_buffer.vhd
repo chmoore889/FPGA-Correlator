@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use work.time_multiplex.ALL;
 
-entity fake_combiner is
+entity linear_buffer is
     Generic (
         numChannels : integer
     );
@@ -17,9 +17,9 @@ entity fake_combiner is
            Dout : out STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
            DRdy : out STD_LOGIC := '0';
            EODout : out STD_LOGIC := '0');
-end fake_combiner;
+end linear_buffer;
 
-architecture Behavioral of fake_combiner is begin    
+architecture Behavioral of linear_buffer is begin    
     output_pipeline : process(clk) begin
         if rising_edge(clk) then
             if Reset = '1' then
